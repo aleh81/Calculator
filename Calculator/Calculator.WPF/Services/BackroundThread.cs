@@ -24,7 +24,7 @@ namespace Calculator.WPF.Services
         {
             if(Display != null)
             {
-                Display(_text);
+               
             }
         }
     }

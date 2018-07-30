@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Diagnostics;
 
 namespace Calculator.WPF
 {
@@ -26,23 +27,37 @@ namespace Calculator.WPF
         private string leftOperand = null;
         private string rightOperand = null;
 
-        object locker = new object();
-        BackroundThread backroundThread = new BackroundThread();
-
-        Thread secondThread = new Thread(Display);
+        private static Mutex _instance;
+        private const string _appName = "Calculator";
 
         public MainWindow()
         {
-            InitializeComponent();
+            bool tryCreateNewApp;
 
-            backroundThread.Display += Display;
+            _instance = new Mutex(true, _appName, out tryCreateNewApp);
 
-            foreach (UIElement el in Root.Children)
+            if (tryCreateNewApp)
             {
-                if (el is Button)
+                InitializeComponent();
+
+                foreach (UIElement el in Root.Children)
                 {
-                    ((Button)el).Click += Button_Click;
+                    if (el is Button)
+                    {
+                        ((Button)el).Click += Button_Click;
+                    }
                 }
+            }
+            else
+            {
+                MessageBox.Show($"Приложение {_appName} уже запущено");
+
+                var targetProcess = Process.GetCurrentProcess();
+
+                targetProcess.CloseMainWindow();
+                targetProcess.Close();
+
+                Environment.Exit(0);
             }
         }
 

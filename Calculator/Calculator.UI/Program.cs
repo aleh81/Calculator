@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace Calculator.UI
 {
@@ -6,7 +7,11 @@ namespace Calculator.UI
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var process = Process.GetCurrentProcess();
+
+            Console.WriteLine(process.ProcessName);
+
+            Console.ReadKey();
         }
     }
 }
