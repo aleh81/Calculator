@@ -3,20 +3,47 @@ using System.Threading;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 
 namespace Calculator.UI
 {
     public class Program
     {
-        const int MaxRows = 4;
-        const int MaxCols = 4;
+        private const int MaxRows = 4;
+        private const int MaxCols = 4;
 
-        public static int[] Arr = new int[MaxRows];
-        public static int[,] mainArr = new int[MaxRows, MaxCols];
+        public static int[] ArrRowsSum = new int[MaxRows];
+        public static int[][] MainArr = new int[MaxRows][];
+
+        public static long Ticks { get; set; }
 
         private static void Main()
         {
-            InitArray(mainArr);
+            //InitArray(MainArr);
+            InitArrayDefault(MainArr);
+
+            // Display(MainArr,"Display array");
+
+            SumWithThread();
+            Console.WriteLine($"Time of execute: {Ticks}");
+            Display(ArrRowsSum, "Sum of rows of MainArr after async operations with Threads:");
+
+            var sumDefault = SumDefault(MainArr);
+            Console.WriteLine($"Time of execute: {Ticks}");
+            Display(sumDefault, "Sum of rows of MainArr after sync operation");
+
+            SumWithTask();
+            Console.WriteLine($"Time of execute: {Ticks}");
+            Display(ArrRowsSum, "Sum of rows of MainArr after async operations with Task");
+
+            Console.ReadKey();
+        }
+
+        private static void SumWithThread()
+        {
+            Clear(ArrRowsSum);
+
+            var watch = Stopwatch.StartNew();
 
             var threads = new Thread[MaxRows];
 
@@ -28,94 +55,122 @@ namespace Calculator.UI
                 threads[i].Start(i);
             }
 
-            for (var i = 0; i < Arr.Length; i++)
-            {
-                Console.WriteLine(Arr[i]);
-            }
+            watch.Stop();
 
-            var sumDefault = SumDefault(mainArr);
-
-            Console.WriteLine("Default Sum: ");
-
-            for (var i = 0; i < sumDefault.Length; i++)
-            {
-                Console.WriteLine(sumDefault[i]);
-            }
-
-            Console.ReadKey();
+            Ticks = watch.ElapsedTicks;
         }
 
-        private static MultiArrCount(int)
+        private static void SumWithTask()
         {
+            Clear(ArrRowsSum);
 
+            var watch = Stopwatch.StartNew();
+
+            for (var i = 0; i < MaxRows; i++)
+            {
+                var task = Task.Run(() => Count(i));
+
+                task.Wait();
+            }
+
+            watch.Stop();
+
+            Ticks = watch.ElapsedTicks;
         }
 
-        private static void InitArray(int[,] arr)
+        private static int[] SumDefault(int[][] arr)
+        {
+            Clear(ArrRowsSum);
+
+            var watch = Stopwatch.StartNew();
+
+            var resultArr = new int[MaxRows];
+
+            for (var i = 0; i < MaxRows; i++)
+            {
+                resultArr[i] = arr[i].Sum();
+            }
+
+            watch.Stop();
+
+            Ticks = watch.ElapsedTicks;
+
+            return resultArr;
+        }
+
+        private static void InitArray(int[][] arr)
         {
             var random = new Random();
 
             for (var i = 0; i < MaxRows; i++)
             {
-                for (var j = 0; j < MaxCols; j++)
+                MainArr[i] = new int[MaxCols];
+
+                for (var j = 0; j < MainArr[i].Length; j++)
                 {
-                    arr[i, j] = random.Next(-100, 100);
+                    MainArr[i][j] = random.Next(-100, 100);
                 }
             }
         }
 
-        private static int[] SumDefault(int[,] arr)
+        private static void InitArrayDefault(int[][] arr)
         {
-            int[]resultArr = new int[MaxRows];
 
-            for(var i = 0; i < MaxRows; i++)
+            for (var i = 0; i < MaxRows; i++)
             {
-                resultArr[i] = arr.GetRow(i);
-            }
+                MainArr[i] = new int[MaxCols];
 
-            return resultArr;
+                for (var j = 0; j < MainArr[i].Length; j++)
+                {
+                    MainArr[i][j] = 1;
+                }
+            }
         }
 
         private static void Count(object obj)
         {
             var index = (int)obj;
 
-            if (Arr[index] != 0)
+            var num = MainArr[index].Sum();
+
+            ArrRowsSum[index] = num;
+        }
+
+        private static void Clear(int[] arr)
+        {
+            for (var i = 0; i < arr.Length; i++)
             {
-                throw new ArgumentException("ERROR: Value already exsist");
+                arr[i] = -999;
             }
-
-            var num = mainArr.GetRow(index);
-
-            Arr[index] = num;
         }
 
         private static void Display(int[] arr, string message)
         {
             Console.WriteLine(message);
 
-            for(var i = 0; i < arr.Length; i++)
+            foreach (var el in arr)
             {
-             
+                Console.WriteLine($"{el}");
             }
+
+            Console.WriteLine(new string('-', 50));
         }
-    }
 
-    public static class ArrayExt
-    {
-        public static int GetRow(this int[,] array, int row)
+        private static void Display(int[][] arr, string message)
         {
-            if (array == null)
+            Console.WriteLine(message);
+
+            for (var i = 0; i < arr.Length; i++)
             {
-                throw new ArgumentNullException("ERROR: Null Array");
+                for (var j = 0; j < arr[i].Length; ++j)
+                {
+                    Console.Write($"{arr[i][j]}      ");
+                }
+
+                Console.WriteLine();
             }
 
-            var cols = array.GetUpperBound(1) + 1;
-            int[] result = new int[cols];
-            var size = Marshal.SizeOf<int>();
-
-            Buffer.BlockCopy(array, row * cols * size, result, 0, cols * size);
-
-            return result.Sum();
+            Console.WriteLine(new string('-', 50));
         }
     }
 }
