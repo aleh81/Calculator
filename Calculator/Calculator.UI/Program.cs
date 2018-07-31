@@ -6,28 +6,17 @@ using System.Runtime.InteropServices;
 
 namespace Calculator.UI
 {
-    public class ThreadParametr
-    {
-        public int Index { get; set; }
-
-        public int[,] MainArr;
-    }
-
     public class Program
     {
         const int MaxRows = 4;
+        const int MaxCols = 4;
 
         public static int[] Arr = new int[MaxRows];
+        public static int[,] mainArr = new int[MaxRows, MaxCols];
 
         private static void Main()
         {
-            var array = new[,]
-            {
-                {1, 2, 2,},
-                {3, 3, 6,},
-                {7, 6, 1,},
-                {7, 6, 1,}
-            };
+            InitArray(mainArr);
 
             var threads = new Thread[MaxRows];
 
@@ -35,38 +24,81 @@ namespace Calculator.UI
             {
                 Thread.Sleep(50);
 
-                var parametrs = new ThreadParametr { Index = i,  MainArr = array };
-                threads[i] = new Thread(new ParameterizedThreadStart(Count));
-
-                threads[i].Start(parametrs);
+                threads[i] = new Thread(Count);
+                threads[i].Start(i);
             }
-
-            //Console.WriteLine(array.GetRow(1));
 
             for (var i = 0; i < Arr.Length; i++)
             {
                 Console.WriteLine(Arr[i]);
             }
 
+            var sumDefault = SumDefault(mainArr);
+
+            Console.WriteLine("Default Sum: ");
+
+            for (var i = 0; i < sumDefault.Length; i++)
+            {
+                Console.WriteLine(sumDefault[i]);
+            }
+
             Console.ReadKey();
+        }
+
+        private static MultiArrCount(int)
+        {
+
+        }
+
+        private static void InitArray(int[,] arr)
+        {
+            var random = new Random();
+
+            for (var i = 0; i < MaxRows; i++)
+            {
+                for (var j = 0; j < MaxCols; j++)
+                {
+                    arr[i, j] = random.Next(-100, 100);
+                }
+            }
+        }
+
+        private static int[] SumDefault(int[,] arr)
+        {
+            int[]resultArr = new int[MaxRows];
+
+            for(var i = 0; i < MaxRows; i++)
+            {
+                resultArr[i] = arr.GetRow(i);
+            }
+
+            return resultArr;
         }
 
         private static void Count(object obj)
         {
-                var parametrs = (ThreadParametr)obj;
+            var index = (int)obj;
 
-                if (Arr[parametrs.Index] != 0)
-                {
-                    throw new ArgumentException("Уже есть значение");
-                }
+            if (Arr[index] != 0)
+            {
+                throw new ArgumentException("ERROR: Value already exsist");
+            }
 
-                var num = parametrs.MainArr.GetRow(parametrs.Index);
+            var num = mainArr.GetRow(index);
 
-                Arr[parametrs.Index] = num;
+            Arr[index] = num;
+        }
+
+        private static void Display(int[] arr, string message)
+        {
+            Console.WriteLine(message);
+
+            for(var i = 0; i < arr.Length; i++)
+            {
+             
+            }
         }
     }
-
-
 
     public static class ArrayExt
     {
