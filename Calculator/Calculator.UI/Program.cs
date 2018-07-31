@@ -9,31 +9,31 @@ namespace Calculator.UI
 {
     public class Program
     {
-        private const int MaxRows = 4;
-        private const int MaxCols = 4;
+        private const int MaxRows = 20;
+        private const int MaxCols = 1000000;
 
         public static int[] ArrRowsSum = new int[MaxRows];
         public static int[][] MainArr = new int[MaxRows][];
 
-        public static long Ticks { get; set; }
+        public static long Milliseconds { get; set; }
 
         private static void Main()
         {
-            //InitArray(MainArr);
-            InitArrayDefault(MainArr);
+            InitArray(MainArr);
+            // InitArrayDefault(MainArr);
 
             // Display(MainArr,"Display array");
 
             SumWithThread();
-            Console.WriteLine($"Time of execute: {Ticks}");
+            Console.WriteLine($"Time of execute: {Milliseconds} ms");
             Display(ArrRowsSum, "Sum of rows of MainArr after async operations with Threads:");
 
             var sumDefault = SumDefault(MainArr);
-            Console.WriteLine($"Time of execute: {Ticks}");
+            Console.WriteLine($"Time of execute: {Milliseconds} ms");
             Display(sumDefault, "Sum of rows of MainArr after sync operation");
 
             SumWithTask();
-            Console.WriteLine($"Time of execute: {Ticks}");
+            Console.WriteLine($"Time of execute: {Milliseconds} ms");
             Display(ArrRowsSum, "Sum of rows of MainArr after async operations with Task");
 
             Console.ReadKey();
@@ -49,15 +49,13 @@ namespace Calculator.UI
 
             for (var i = 0; i < MaxRows; i++)
             {
-                Thread.Sleep(50);
-
                 threads[i] = new Thread(Count);
                 threads[i].Start(i);
             }
 
             watch.Stop();
 
-            Ticks = watch.ElapsedTicks;
+            Milliseconds = watch.ElapsedMilliseconds;
         }
 
         private static void SumWithTask()
@@ -75,7 +73,7 @@ namespace Calculator.UI
 
             watch.Stop();
 
-            Ticks = watch.ElapsedTicks;
+            Milliseconds = watch.ElapsedMilliseconds;
         }
 
         private static int[] SumDefault(int[][] arr)
@@ -93,7 +91,7 @@ namespace Calculator.UI
 
             watch.Stop();
 
-            Ticks = watch.ElapsedTicks;
+            Milliseconds = watch.ElapsedMilliseconds;
 
             return resultArr;
         }
@@ -140,7 +138,7 @@ namespace Calculator.UI
         {
             for (var i = 0; i < arr.Length; i++)
             {
-                arr[i] = -999;
+                arr[i] = 0;
             }
         }
 
