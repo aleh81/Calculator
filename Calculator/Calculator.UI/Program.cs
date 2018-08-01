@@ -9,12 +9,9 @@ namespace Calculator.UI
 {
     public class Program
     {
-        private const int MaxRows = 5;
-        private const int MaxCols = 4000000;
-
         private static void Main()
         {
-            var arr = InitArray();
+            var arr = InitArray(25, 500000);
 
             var watchDef = Stopwatch.StartNew();
             Console.WriteLine($"Def sum - {SumDefault(arr)}");
@@ -26,9 +23,7 @@ namespace Calculator.UI
             watchThreads.Stop();
             Console.WriteLine($"Threads time - {watchThreads.ElapsedMilliseconds} ms");
 
-            //!!!!
             var watchThreadPool = Stopwatch.StartNew();
-            //SumWithThreadPool();
             Console.WriteLine($"ThreadPool sum -  {SumWithThreadPool(arr)}");
             watchThreadPool.Stop();
             Console.WriteLine($"ThreadPool time - {watchThreadPool.ElapsedMilliseconds} ms");
@@ -41,36 +36,44 @@ namespace Calculator.UI
             Console.ReadKey();
         }
 
-        private static int SumWithThread(int[][] sentArray)
+        private static int SumWithThread(int[][] arr)
         {
-            var threadList = new List<Thread>(MaxRows);
-            var arr = new int[MaxRows];
+            var threadList = new List<Thread>(arr.Length);
+            var resultArr = new int[arr.Length];
 
-            for (var i = 0; i < MaxRows; i++)
+            for (var i = 0; i < arr.Length; i++)
             {
                 var index = i;
 
                 threadList.Add(new Thread(() =>
-                { arr[index] = sentArray[index].Sum(); }));
+                { resultArr[index] = arr[index].Sum(); }));
 
                 threadList[i].Start();
             }
 
             threadList.ForEach(th => th.Join());
 
-            return arr.Sum();
+            return resultArr.Sum();
         }
 
         private static int SumWithThreadPool(int[][] arr)
         {
-            var resultArr = new int[MaxRows];
+            var resultArr = new int[arr.Length];
 
-            for (var i = 0; i < MaxRows; i++)
+            using (var cde = new CountdownEvent(arr.Length))
             {
-                var index = i;
+                for (var i = 0; i < arr.Length; i++)
+                {
+                    var index = i;
 
-                //ThreadPool.QueueUserWorkItem((val) => { resultArr[index] = arr[index].Sum(); });
-                ThreadPool.QueueUserWorkItem((val) => { resultArr[index] = arr[index].Sum(); });
+                    ThreadPool.QueueUserWorkItem(delegate
+                    {
+                        resultArr[index] = arr[index].Sum();
+                        cde.Signal();
+                    });
+                }
+
+                cde.Wait();
             }
 
             return resultArr.Sum();
@@ -79,9 +82,9 @@ namespace Calculator.UI
         private static int SumWithTask(int[][] arr)
         {
             var tasks = new List<Task>();
-            var resultArr = new int[MaxRows];
+            var resultArr = new int[arr.Length];
 
-            for (var i = 0; i < MaxRows; i++)
+            for (var i = 0; i < arr.Length; i++)
             {
                 var index = i;
 
@@ -101,10 +104,9 @@ namespace Calculator.UI
 
         private static int SumDefault(int[][] arr)
         {
+            var resultArr = new int[arr.Length];
 
-            var resultArr = new int[MaxRows];
-
-            for (var i = 0; i < MaxRows; i++)
+            for (var i = 0; i < arr.Length; i++)
             {
                 resultArr[i] = arr[i].Sum();
             }
@@ -112,14 +114,14 @@ namespace Calculator.UI
             return resultArr.Sum();
         }
 
-        private static int[][] InitArray()
+        private static int[][] InitArray(int rowSize, int colSize)
         {
             var random = new Random();
-            var arr = new int[MaxRows][];
+            var arr = new int[rowSize][];
 
-            for (var i = 0; i < MaxRows; i++)
+            for (var i = 0; i < rowSize; i++)
             {
-                arr[i] = new int[MaxCols];
+                arr[i] = new int[colSize];
 
                 for (var j = 0; j < arr[i].Length; j++)
                 {
@@ -129,12 +131,5 @@ namespace Calculator.UI
 
             return arr;
         }
-    }
-
-    internal class ArrModel
-    {
-        int[] intputArr { get; set; }
-
-        int[] outputArr { get; set; }
     }
 }
