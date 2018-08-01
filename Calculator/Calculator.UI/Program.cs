@@ -22,19 +22,19 @@ namespace Calculator.UI
             InitArray(MainArr);
 
             SumWithThread();
-            Console.WriteLine($"Time of execute: {Milliseconds} ms");
-            Console.WriteLine($"Sum of rows of MainArr after async operations with Threads: \n {Sum(ArrRowsSum)}");
+            Console.WriteLine($"Threads time - {Milliseconds} ms");
+            Console.WriteLine($"Threads sum -  {Sum(ArrRowsSum)}");
             //Display(ArrRowsSum, "Sum of rows of MainArr after async operations with Threads:");
 
             var sumDefault = SumDefault(MainArr);
-            Console.WriteLine($"Time of execute: {Milliseconds} ms");
+            Console.WriteLine($"Def time - {Milliseconds} ms");
             // Display(sumDefault, "Sum of rows of MainArr after sync operation");
-            Console.WriteLine($"Sum of rows of MainArr after sync operation: \n {Sum(sumDefault)}");
+            Console.WriteLine($"Def sum - {Sum(sumDefault)}");
 
             SumWithTask();
-            Console.WriteLine($"Time of execute: {Milliseconds} ms");
+            Console.WriteLine($"Task time - {Milliseconds} ms");
             //Display(ArrRowsSum, "Sum of rows of MainArr after async operations with Task");
-            Console.WriteLine($"Sum of rows of MainArr after async operations with Task: \n {Sum(ArrRowsSum)}");
+            Console.WriteLine($"Task sum -  {Sum(ArrRowsSum)}");
 
             Console.ReadKey();
         }
