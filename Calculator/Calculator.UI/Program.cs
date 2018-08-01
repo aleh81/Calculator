@@ -9,32 +9,34 @@ namespace Calculator.UI
 {
     public class Program
     {
-        private const int MaxRows = 20;
-        private const int MaxCols = 1000000;
+        private const int MaxRows = 200;
+        private const int MaxCols = 4000000;
 
         public static int[] ArrRowsSum = new int[MaxRows];
         public static int[][] MainArr = new int[MaxRows][];
 
         public static long Milliseconds { get; set; }
 
+        private static Semaphore sem = new Semaphore(3, 3);
+
         private static void Main()
         {
             InitArray(MainArr);
-            // InitArrayDefault(MainArr);
-
-            // Display(MainArr,"Display array");
 
             SumWithThread();
             Console.WriteLine($"Time of execute: {Milliseconds} ms");
-            Display(ArrRowsSum, "Sum of rows of MainArr after async operations with Threads:");
+            Console.WriteLine($"Sum of rows of MainArr after async operations with Threads: \n {Sum(ArrRowsSum)}");
+            //Display(ArrRowsSum, "Sum of rows of MainArr after async operations with Threads:");
 
             var sumDefault = SumDefault(MainArr);
             Console.WriteLine($"Time of execute: {Milliseconds} ms");
-            Display(sumDefault, "Sum of rows of MainArr after sync operation");
+            // Display(sumDefault, "Sum of rows of MainArr after sync operation");
+            Console.WriteLine($"Sum of rows of MainArr after sync operation: \n {Sum(sumDefault)}");
 
             SumWithTask();
             Console.WriteLine($"Time of execute: {Milliseconds} ms");
-            Display(ArrRowsSum, "Sum of rows of MainArr after async operations with Task");
+            //Display(ArrRowsSum, "Sum of rows of MainArr after async operations with Task");
+            Console.WriteLine($"Sum of rows of MainArr after async operations with Task: \n {Sum(ArrRowsSum)}");
 
             Console.ReadKey();
         }
@@ -50,7 +52,10 @@ namespace Calculator.UI
             for (var i = 0; i < MaxRows; i++)
             {
                 threads[i] = new Thread(Count);
+               
                 threads[i].Start(i);
+               
+                Thread.Sleep(50);
             }
 
             watch.Stop();
@@ -140,6 +145,11 @@ namespace Calculator.UI
             {
                 arr[i] = 0;
             }
+        }
+
+        private static int Sum(int[] arr)
+        {
+            return arr.Sum();
         }
 
         private static void Display(int[] arr, string message)
