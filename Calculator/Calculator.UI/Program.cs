@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Diagnostics;
 using System.Linq;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
@@ -47,14 +48,16 @@ namespace Calculator.UI
 
             var threads = new Thread[MaxRows];
 
+            var threadList = new List<Thread>();
+
             for (var i = 0; i < MaxRows; i++)
             {
-                threads[i] = new Thread(Count);
+                threadList.Add(new Thread(Count));
 
-                threads[i].Start(i);
-
-                threads[i].Join();
+                threadList[i].Start(i);
             }
+
+            threadList.ForEach(th => th.Join());
 
             watch.Stop();
 
