@@ -17,8 +17,6 @@ namespace Calculator.UI
 
         public static long Milliseconds { get; set; }
 
-        private static Semaphore sem = new Semaphore(3, 3);
-
         private static void Main()
         {
             InitArray(MainArr);
@@ -52,10 +50,10 @@ namespace Calculator.UI
             for (var i = 0; i < MaxRows; i++)
             {
                 threads[i] = new Thread(Count);
-               
+
                 threads[i].Start(i);
-               
-                Thread.Sleep(50);
+
+                threads[i].Join();
             }
 
             watch.Stop();
