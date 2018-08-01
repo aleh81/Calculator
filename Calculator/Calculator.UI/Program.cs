@@ -10,93 +10,106 @@ namespace Calculator.UI
 {
     public class Program
     {
-        private const int MaxRows = 3;
+        private const int MaxRows = 5;
         private const int MaxCols = 4000000;
 
         public static int[] ArrRowsSum = new int[MaxRows];
         public static int[][] MainArr = new int[MaxRows][];
 
-        public static long Milliseconds { get; set; }
-
         private static void Main()
         {
             InitArray(MainArr);
 
+            var watchDef = Stopwatch.StartNew();
             SumDefault(MainArr);
-            Console.WriteLine($"Def time - {Milliseconds} ms");
-            Console.WriteLine($"Def sum - {Sum(ArrRowsSum)}");
+            Console.WriteLine($"Def sum - {ArrRowsSum.Sum()}");
+            watchDef.Stop();
+            Console.WriteLine($"Def time - {watchDef.ElapsedMilliseconds} ms");
 
+            var watchThreads = Stopwatch.StartNew();
             SumWithThread();
-            Console.WriteLine($"Threads time - {Milliseconds} ms");
-            Console.WriteLine($"Threads sum -  {Sum(ArrRowsSum)}");
+            Console.WriteLine($"Threads sum -  {ArrRowsSum.Sum()}");
+            watchThreads.Stop();
+            Console.WriteLine($"Threads time - {watchThreads.ElapsedMilliseconds} ms");
 
+            var watchThreadPool = Stopwatch.StartNew();
+            SumWithThreadPool();
+            Console.WriteLine($"ThreadPool sum -  {ArrRowsSum.Sum()}");
+            watchThreadPool.Stop();
+            Console.WriteLine($"ThreadPool time - {watchThreadPool.ElapsedMilliseconds} ms");
+
+            var watchTasks = Stopwatch.StartNew();
             SumWithTask();
-            Console.WriteLine($"Task time - {Milliseconds} ms");
-            Console.WriteLine($"Task sum -  {Sum(ArrRowsSum)}");
+            Console.WriteLine($"Task sum -  {ArrRowsSum.Sum()}");
+            watchTasks.Stop();
+            Console.WriteLine($"Task time - {watchTasks.ElapsedMilliseconds} ms");
 
             Console.ReadKey();
         }
 
         private static void SumWithThread()
         {
-            Clear(ArrRowsSum);
-
             var threadList = new List<Thread>(MaxRows);
-
-            var watch = Stopwatch.StartNew();
 
             for (var i = 0; i < MaxRows; i++)
             {
-                threadList.Add(new Thread(Count));
+                var index = i;
 
-                threadList[i].Start(i);
+                threadList.Add(new Thread(() =>
+                { ArrRowsSum[index] = MainArr[index].Sum(); }));
+
+                threadList[i].Start();
             }
 
             threadList.ForEach(th => th.Join());
+        }
 
-            watch.Stop();
+        private static void SumWithThreadPool()
+        {
+            for(var i = 0; i < MaxRows; i++)
+            {
+                var index = i;
 
-            Milliseconds = watch.ElapsedMilliseconds;
+                ThreadPool.QueueUserWorkItem(new WaitCallback(Count), index);
+            }
+        }
+
+        private static void Count(object state)
+        {
+            int index = (int)state;
+
+            ArrRowsSum[index] = MainArr[index].Sum();
         }
 
         private static void SumWithTask()
         {
-            Clear(ArrRowsSum);
+            var tasks = new List<Task>();
 
-            var tasks = new Task[MaxRows];
-
-            var watch = Stopwatch.StartNew();
-
-            for (var i = 0; i < tasks.Length; i++)
+            for (var i = 0; i < MaxRows; i++)
             {
-                tasks[i] = new Task(() => Count(i));
+                var index = i;
 
-                tasks[i].Start();
+                var task = new Task(() =>
+                {
+                    ArrRowsSum[index] = MainArr[index].Sum();
+                });
+
+                task.Start();
+                tasks.Add(task);
             }
 
-            Task.WaitAll();
-
-            watch.Stop();
-
-            Milliseconds = watch.ElapsedMilliseconds;
+            Task.WaitAll(tasks.ToArray());
         }
 
         private static void SumDefault(int[][] arr)
         {
-            Clear(ArrRowsSum);
-
-            var watch = Stopwatch.StartNew();
 
             var resultArr = new int[MaxRows];
 
             for (var i = 0; i < MaxRows; i++)
             {
-                Count(i);
+                ArrRowsSum[i] = MainArr[i].Sum();
             }
-
-            watch.Stop();
-
-            Milliseconds = watch.ElapsedMilliseconds;
         }
 
         private static void InitArray(int[][] arr)
@@ -126,57 +139,6 @@ namespace Calculator.UI
                     MainArr[i][j] = 1;
                 }
             }
-        }
-
-        private static void Count(object obj)
-        {
-            var index = (int)obj;
-
-            var num = MainArr[index].Sum();
-
-            ArrRowsSum[index] = num;
-        }
-
-        private static void Clear(int[] arr)
-        {
-            for (var i = 0; i < arr.Length; i++)
-            {
-                arr[i] = 0;
-            }
-        }
-
-        private static int Sum(int[] arr)
-        {
-            return arr.Sum();
-        }
-
-        private static void Display(int[] arr, string message)
-        {
-            Console.WriteLine(message);
-
-            foreach (var el in arr)
-            {
-                Console.WriteLine($"{el}");
-            }
-
-            Console.WriteLine(new string('-', 50));
-        }
-
-        private static void Display(int[][] arr, string message)
-        {
-            Console.WriteLine(message);
-
-            for (var i = 0; i < arr.Length; i++)
-            {
-                for (var j = 0; j < arr[i].Length; ++j)
-                {
-                    Console.Write($"{arr[i][j]}      ");
-                }
-
-                Console.WriteLine();
-            }
-
-            Console.WriteLine(new string('-', 50));
         }
     }
 }
