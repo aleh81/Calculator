@@ -46,8 +46,6 @@ namespace Calculator.UI
 
             var watch = Stopwatch.StartNew();
 
-            var threads = new Thread[MaxRows];
-
             var threadList = new List<Thread>();
 
             for (var i = 0; i < MaxRows; i++)
