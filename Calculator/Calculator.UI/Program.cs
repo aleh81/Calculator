@@ -11,7 +11,13 @@ namespace Calculator.UI
     {
         private static void Main()
         {
-            Display();
+            var initArr = InitArray(2, 500000);
+
+            Task1(initArr);
+
+            Console.WriteLine(new string('-', 30));
+
+            Task2(initArr);
 
             Console.ReadKey();
         }
@@ -35,7 +41,9 @@ namespace Calculator.UI
                 var index = i;
 
                 threadList.Add(new Thread(() =>
-                { resultArr[index] = arr[index].Sum(); }));
+                {
+                    resultArr[index] = arr[index].Sum();
+                }));
 
                 threadList[i].Start();
             }
@@ -43,6 +51,25 @@ namespace Calculator.UI
             threadList.ForEach(th => th.Join());
 
             return resultArr.Sum();
+        }
+
+        private static int SyncSumWithTread(int[][] arr, int counter)
+        {
+            var threadList = new List<Thread>(arr.Length);
+
+            for (var i = 0; i < arr.Length; i++)
+            {
+                var index = i;
+
+                threadList.Add(new Thread(() =>
+                {
+                    counter += arr[index].Sum();
+                }));
+
+                threadList[i].Start();
+            }
+
+            return counter;
         }
 
         private static int SumWithThreadPool(int[][] arr)
@@ -58,6 +85,7 @@ namespace Calculator.UI
                     ThreadPool.QueueUserWorkItem(delegate
                     {
                         resultArr[index] = arr[index].Sum();
+
                         cde.Signal();
                     });
                 }
@@ -121,34 +149,39 @@ namespace Calculator.UI
             return arr;
         }
 
-        private static void Display()
+        private static void Task1(int[][] initArr)
         {
-            var arr = InitArray(250, 500000);
-
             var watchDef = Stopwatch.StartNew();
-            Console.WriteLine($"Def sum - {SumDefault(arr)}");
+            Console.WriteLine($"Def sum - {SumDefault(initArr)}");
             watchDef.Stop();
             Console.WriteLine($"Def time - {watchDef.ElapsedMilliseconds} ms");
 
             var watchThreads = Stopwatch.StartNew();
-            Console.WriteLine($"Threads sum -  {SumWithThread(arr)}");
+            Console.WriteLine($"Threads sum -  {SumWithThread(initArr)}");
             watchThreads.Stop();
             Console.WriteLine($"Threads time - {watchThreads.ElapsedMilliseconds} ms");
 
             var watchThreadPool = Stopwatch.StartNew();
-            Console.WriteLine($"ThreadPool sum -  {SumWithThreadPool(arr)}");
+            Console.WriteLine($"ThreadPool sum -  {SumWithThreadPool(initArr)}");
             watchThreadPool.Stop();
             Console.WriteLine($"ThreadPool time - {watchThreadPool.ElapsedMilliseconds} ms");
 
             var watchTasks = Stopwatch.StartNew();
-            Console.WriteLine($"Task sum -  {SumWithTask(arr)}");
+            Console.WriteLine($"Task sum -  {SumWithTask(initArr)}");
             watchTasks.Stop();
             Console.WriteLine($"Task time - {watchTasks.ElapsedMilliseconds} ms");
 
             var watchParallel = Stopwatch.StartNew();
-            Console.WriteLine($"Parallel sum - {SumWithParallel(arr)}");
+            Console.WriteLine($"Parallel sum - {SumWithParallel(initArr)}");
             watchParallel.Stop();
             Console.WriteLine($"Parallel time - {watchParallel.ElapsedMilliseconds}");
+        }
+
+        private static void Task2(int[][] initArr)
+        {
+            var counter = 0;
+
+            Console.WriteLine($"Sync Thread sum - {SyncSumWithTread(initArr, counter)}");
         }
     }
 }
