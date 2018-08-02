@@ -45,12 +45,7 @@ namespace Calculator.UI
         {
             var resultArr = new int[arr.Length];
 
-            for (var i = 0; i < arr.Length; i++)
-            {
-                var index = i;
-
-                Parallel.Invoke(() => resultArr[i] = arr[index].Sum());
-            }
+            Parallel.For(0, arr.Length, i => resultArr[i] = arr[i].Sum());
 
             return resultArr.Sum();
         }
