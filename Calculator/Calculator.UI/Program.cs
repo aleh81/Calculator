@@ -11,32 +11,7 @@ namespace Calculator.UI
     {
         private static void Main()
         {
-            var arr = InitArray(250, 500000);
-
-            var watchDef = Stopwatch.StartNew();
-            Console.WriteLine($"Def sum - {SumDefault(arr)}");
-            watchDef.Stop();
-            Console.WriteLine($"Def time - {watchDef.ElapsedMilliseconds} ms");
-
-            var watchThreads = Stopwatch.StartNew();
-            Console.WriteLine($"Threads sum -  {SumWithThread(arr)}");
-            watchThreads.Stop();
-            Console.WriteLine($"Threads time - {watchThreads.ElapsedMilliseconds} ms");
-
-            var watchThreadPool = Stopwatch.StartNew();
-            Console.WriteLine($"ThreadPool sum -  {SumWithThreadPool(arr)}");
-            watchThreadPool.Stop();
-            Console.WriteLine($"ThreadPool time - {watchThreadPool.ElapsedMilliseconds} ms");
-
-            var watchTasks = Stopwatch.StartNew();
-            Console.WriteLine($"Task sum -  {SumWithTask(arr)}");
-            watchTasks.Stop();
-            Console.WriteLine($"Task time - {watchTasks.ElapsedMilliseconds} ms");
-
-            var watchParallel = Stopwatch.StartNew();
-            Console.WriteLine($"Parallel sum - {SumWithParallel(arr)}");
-            watchParallel.Stop();
-            Console.WriteLine($"Parallel time - {watchParallel.ElapsedMilliseconds}");
+            Display();
 
             Console.ReadKey();
         }
@@ -144,6 +119,36 @@ namespace Calculator.UI
             }
 
             return arr;
+        }
+
+        private static void Display()
+        {
+            var arr = InitArray(250, 500000);
+
+            var watchDef = Stopwatch.StartNew();
+            Console.WriteLine($"Def sum - {SumDefault(arr)}");
+            watchDef.Stop();
+            Console.WriteLine($"Def time - {watchDef.ElapsedMilliseconds} ms");
+
+            var watchThreads = Stopwatch.StartNew();
+            Console.WriteLine($"Threads sum -  {SumWithThread(arr)}");
+            watchThreads.Stop();
+            Console.WriteLine($"Threads time - {watchThreads.ElapsedMilliseconds} ms");
+
+            var watchThreadPool = Stopwatch.StartNew();
+            Console.WriteLine($"ThreadPool sum -  {SumWithThreadPool(arr)}");
+            watchThreadPool.Stop();
+            Console.WriteLine($"ThreadPool time - {watchThreadPool.ElapsedMilliseconds} ms");
+
+            var watchTasks = Stopwatch.StartNew();
+            Console.WriteLine($"Task sum -  {SumWithTask(arr)}");
+            watchTasks.Stop();
+            Console.WriteLine($"Task time - {watchTasks.ElapsedMilliseconds} ms");
+
+            var watchParallel = Stopwatch.StartNew();
+            Console.WriteLine($"Parallel sum - {SumWithParallel(arr)}");
+            watchParallel.Stop();
+            Console.WriteLine($"Parallel time - {watchParallel.ElapsedMilliseconds}");
         }
     }
 }
