@@ -36,7 +36,7 @@ namespace Calculator.UI
 
         private static void SumFromSyncedThreadsWithParallel(int[][] arr)
         {
-            Reset();
+            ResetSumCounter();
 
             var locker = new object();
 
@@ -82,7 +82,7 @@ namespace Calculator.UI
             var threadList = new List<Thread>(arr.Length);
             var locker = new object();
 
-            Reset();
+            ResetSumCounter();
 
             for (var i = 0; i < arr.Length; i++)
             {
@@ -128,7 +128,7 @@ namespace Calculator.UI
 
         private static void SumFromSyncedThreadPool(int[][] arr)
         {
-            Reset();
+            ResetSumCounter();
 
             var locker = new object();
 
@@ -181,7 +181,7 @@ namespace Calculator.UI
             var tasks = new List<Task>();
             var locker = new object();
 
-            Reset();
+            ResetSumCounter();
 
             for (var i = 0; i < arr.Length; i++)
             {
@@ -232,7 +232,7 @@ namespace Calculator.UI
             return arr;
         }
 
-        private static void Reset()
+        private static void ResetSumCounter()
         {
             sumCounter = 0;
         }
