@@ -11,7 +11,7 @@ namespace Calculator.UI
     {
         private static void Main()
         {
-            var arr = InitArray(25, 500000);
+            var arr = InitArray(250, 500000);
 
             var watchDef = Stopwatch.StartNew();
             Console.WriteLine($"Def sum - {SumDefault(arr)}");
@@ -33,7 +33,26 @@ namespace Calculator.UI
             watchTasks.Stop();
             Console.WriteLine($"Task time - {watchTasks.ElapsedMilliseconds} ms");
 
+            var watchParallel = Stopwatch.StartNew();
+            Console.WriteLine($"Parallel sum - {SumWithParallel(arr)}");
+            watchParallel.Stop();
+            Console.WriteLine($"Parallel time - {watchParallel.ElapsedMilliseconds}");
+
             Console.ReadKey();
+        }
+
+        private static int SumWithParallel(int[][] arr)
+        {
+            var resultArr = new int[arr.Length];
+
+            for(var i = 0; i<arr.Length; i++)
+            {
+                var index = i;
+
+                Parallel.Invoke(() => resultArr[i] = arr[index].Sum());
+            }
+
+            return resultArr.Sum();
         }
 
         private static int SumWithThread(int[][] arr)
