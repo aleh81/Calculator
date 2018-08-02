@@ -45,7 +45,7 @@ namespace Calculator.UI
         {
             var resultArr = new int[arr.Length];
 
-            for(var i = 0; i<arr.Length; i++)
+            for (var i = 0; i < arr.Length; i++)
             {
                 var index = i;
 
