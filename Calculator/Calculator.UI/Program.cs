@@ -28,7 +28,8 @@ namespace Calculator.UI
         {
             var rowSumVector = new int[arr.Length];
 
-            Parallel.For(0, arr.Length, i => rowSumVector[i] = arr[i].Sum());
+            Parallel.For(0, arr.Length, index =>
+            SetVectorSum(out rowSumVector[index], arr[index].Sum()));
 
             return rowSumVector.Sum();
         }
@@ -45,7 +46,7 @@ namespace Calculator.UI
                 {
                     Monitor.Enter(locker);
 
-                    sumCounter += arr[i].Sum();
+                    AddCounterSum(arr[i].Sum());
                 }
                 finally
                 {
@@ -65,7 +66,7 @@ namespace Calculator.UI
 
                 threadList.Add(new Thread(() =>
                 {
-                    rowSumVector[index] = arr[index].Sum();
+                    SetVectorSum(out rowSumVector[index], arr[index].Sum());
                 }));
 
                 threadList[i].Start();
@@ -91,7 +92,7 @@ namespace Calculator.UI
                 {
                     lock (locker)
                     {
-                        sumCounter += arr[index].Sum();
+                        AddCounterSum(arr[index].Sum());
                     }
                 }));
 
@@ -113,7 +114,7 @@ namespace Calculator.UI
 
                     ThreadPool.QueueUserWorkItem(delegate
                     {
-                        rowSumVector[index] = arr[index].Sum();
+                        SetVectorSum(out rowSumVector[index], arr[index].Sum());
 
                         countDownEvent.Signal();
                     });
@@ -141,7 +142,7 @@ namespace Calculator.UI
                     {
                         lock (locker)
                         {
-                            sumCounter += arr[index].Sum();
+                            AddCounterSum(arr[index].Sum());
                         }
 
                         countDownEvent.Signal();
@@ -163,7 +164,7 @@ namespace Calculator.UI
 
                 var task = new Task(() =>
                 {
-                    rowSumVector[index] = arr[index].Sum();
+                    SetVectorSum(out rowSumVector[index], arr[index].Sum());
                 });
 
                 task.Start();
@@ -190,7 +191,7 @@ namespace Calculator.UI
                 {
                     lock (locker)
                     {
-                        sumCounter += arr[index].Sum();
+                        AddCounterSum(arr[index].Sum());
                     }
                 });
 
@@ -207,7 +208,7 @@ namespace Calculator.UI
 
             for (var i = 0; i < arr.Length; i++)
             {
-                rowSumVector[i] = arr[i].Sum();
+                SetVectorSum(out rowSumVector[i], arr[i].Sum());
             }
 
             return rowSumVector.Sum();
@@ -234,6 +235,16 @@ namespace Calculator.UI
         private static void Reset()
         {
             sumCounter = 0;
+        }
+
+        private static void SetVectorSum(out int outputArr, int sum)
+        {
+            outputArr = sum;
+        }
+
+        private static void AddCounterSum(int sum)
+        {
+            sumCounter += sum;
         }
 
         private static void Task1(int[][] initArr)
