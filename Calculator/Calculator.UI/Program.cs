@@ -20,7 +20,7 @@ namespace Calculator.UI
         {
             var resultArr = new int[arr.Length];
 
-            Parallel.ForEach(resultArr, i => resultArr[i] = arr[i].Sum());
+            Parallel.For(0, arr.Length, i => resultArr[i] = arr[i].Sum());
 
             return resultArr.Sum();
         }
