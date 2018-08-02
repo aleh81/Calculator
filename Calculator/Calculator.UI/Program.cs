@@ -36,8 +36,6 @@ namespace Calculator.UI
 
         private static int SumFromSyncedThreadsWithParallel(int[][] arr)
         {
-            var rowSumVector = new int[arr.Length];
-
             Reset();
 
             Parallel.For(0, arr.Length, i =>
@@ -131,8 +129,6 @@ namespace Calculator.UI
 
         private static int SumFromSyncedThreadPool(int[][] arr)
         {
-            var rowSumVector = new int[arr.Length];
-
             Reset();
 
             using (var cde = new CountdownEvent(arr.Length))
