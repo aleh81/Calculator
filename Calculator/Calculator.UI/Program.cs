@@ -9,17 +9,15 @@ namespace Calculator.UI
 {
     public class Program
     {
-        private static int sumCounter;
-
         private static void Main()
         {
-            var initArr = InitArray(500, 70000);
+            var array = CreateAndInitArray(500, 70000);
 
-            Task1(initArr);
+            TestingMultithreadedArrayCounting(array);
 
             Console.WriteLine(new string('-', 30));
 
-            Task2(initArr);
+            TestingMultithreadedArrayCountingWithUsingSynchronization(array);
 
             Console.ReadKey();
         }
@@ -29,15 +27,14 @@ namespace Calculator.UI
             var rowSumVector = new int[arr.Length];
 
             Parallel.For(0, arr.Length, index =>
-            SetVectorSum(out rowSumVector[index], arr[index].Sum()));
+            AddSumInVectorField(out rowSumVector[index], arr[index].Sum()));
 
             return rowSumVector.Sum();
         }
 
-        private static void SumFromSyncedThreadsWithParallel(int[][] arr)
+        private static int SumFromSyncedThreadsWithParallel(int[][] arr)
         {
-            ResetSumCounter();
-
+            var sumCounter = 0;
             var locker = new object();
 
             Parallel.For(0, arr.Length, i =>
@@ -46,13 +43,15 @@ namespace Calculator.UI
                 {
                     Monitor.Enter(locker);
 
-                    AddCounterSum(arr[i].Sum());
+                    sumCounter += arr[i].Sum();
                 }
                 finally
                 {
                     Monitor.Exit(locker);
                 }
             });
+
+            return sumCounter;
         }
 
         private static int SumWithThread(int[][] arr)
@@ -66,7 +65,7 @@ namespace Calculator.UI
 
                 threadList.Add(new Thread(() =>
                 {
-                    SetVectorSum(out rowSumVector[index], arr[index].Sum());
+                    AddSumInVectorField(out rowSumVector[index], arr[index].Sum());
                 }));
 
                 threadList[i].Start();
@@ -77,12 +76,11 @@ namespace Calculator.UI
             return rowSumVector.Sum();
         }
 
-        private static void SumFromSyncedTreads(int[][] arr)
+        private static int SumFromSyncedTreads(int[][] arr)
         {
+            var sumCounter = 0;
             var threadList = new List<Thread>(arr.Length);
             var locker = new object();
-
-            ResetSumCounter();
 
             for (var i = 0; i < arr.Length; i++)
             {
@@ -92,7 +90,7 @@ namespace Calculator.UI
                 {
                     lock (locker)
                     {
-                        AddCounterSum(arr[index].Sum());
+                        sumCounter += arr[index].Sum();
                     }
                 }));
 
@@ -100,6 +98,8 @@ namespace Calculator.UI
 
                 threadList.ForEach(th => th.Join());
             }
+
+            return sumCounter;
         }
 
         private static int SumWithThreadPool(int[][] arr)
@@ -114,7 +114,7 @@ namespace Calculator.UI
 
                     ThreadPool.QueueUserWorkItem(delegate
                     {
-                        SetVectorSum(out rowSumVector[index], arr[index].Sum());
+                        AddSumInVectorField(out rowSumVector[index], arr[index].Sum());
 
                         countDownEvent.Signal();
                     });
@@ -126,10 +126,9 @@ namespace Calculator.UI
             return rowSumVector.Sum();
         }
 
-        private static void SumFromSyncedThreadPool(int[][] arr)
+        private static int SumFromSyncedThreadPool(int[][] arr)
         {
-            ResetSumCounter();
-
+            var sumCounter = 0;
             var locker = new object();
 
             using (var countDownEvent = new CountdownEvent(arr.Length))
@@ -142,7 +141,7 @@ namespace Calculator.UI
                     {
                         lock (locker)
                         {
-                            AddCounterSum(arr[index].Sum());
+                            sumCounter += arr[index].Sum();
                         }
 
                         countDownEvent.Signal();
@@ -151,11 +150,13 @@ namespace Calculator.UI
 
                 countDownEvent.Wait();
             }
+
+            return sumCounter;
         }
 
         private static int SumWithTask(int[][] arr)
         {
-            var tasks = new List<Task>();
+            var taskList = new List<Task>();
             var rowSumVector = new int[arr.Length];
 
             for (var i = 0; i < arr.Length; i++)
@@ -164,24 +165,23 @@ namespace Calculator.UI
 
                 var task = new Task(() =>
                 {
-                    SetVectorSum(out rowSumVector[index], arr[index].Sum());
+                    AddSumInVectorField(out rowSumVector[index], arr[index].Sum());
                 });
 
                 task.Start();
-                tasks.Add(task);
+                taskList.Add(task);
             }
 
-            Task.WaitAll(tasks.ToArray());
+            Task.WaitAll(taskList.ToArray());
 
             return rowSumVector.Sum();
         }
 
-        private static void SumWithSyncedTask(int[][] arr)
+        private static int SumWithSyncedTask(int[][] arr)
         {
-            var tasks = new List<Task>();
+            var sumCounter = 0;
+            var taskList = new List<Task>();
             var locker = new object();
-
-            ResetSumCounter();
 
             for (var i = 0; i < arr.Length; i++)
             {
@@ -191,15 +191,17 @@ namespace Calculator.UI
                 {
                     lock (locker)
                     {
-                        AddCounterSum(arr[index].Sum());
+                        sumCounter += arr[index].Sum();
                     }
                 });
 
                 task.Start();
-                tasks.Add(task);
+                taskList.Add(task);
             }
 
-            Task.WaitAll(tasks.ToArray());
+            Task.WaitAll(taskList.ToArray());
+
+            return sumCounter;
         }
 
         private static int SumDefault(int[][] arr)
@@ -208,13 +210,13 @@ namespace Calculator.UI
 
             for (var i = 0; i < arr.Length; i++)
             {
-                SetVectorSum(out rowSumVector[i], arr[i].Sum());
+                AddSumInVectorField(out rowSumVector[i], arr[i].Sum());
             }
 
             return rowSumVector.Sum();
         }
 
-        private static int[][] InitArray(int rowSize, int colSize)
+        private static int[][] CreateAndInitArray(int rowSize, int colSize)
         {
             var random = new Random();
             var arr = new int[rowSize][];
@@ -232,22 +234,12 @@ namespace Calculator.UI
             return arr;
         }
 
-        private static void ResetSumCounter()
+        private static void AddSumInVectorField(out int outputVectorCell, int addingSum)
         {
-            sumCounter = 0;
+            outputVectorCell = addingSum;
         }
 
-        private static void SetVectorSum(out int outputArr, int sum)
-        {
-            outputArr = sum;
-        }
-
-        private static void AddCounterSum(int sum)
-        {
-            sumCounter += sum;
-        }
-
-        private static void Task1(int[][] initArr)
+        private static void TestingMultithreadedArrayCounting(int[][] initArr)
         {
             var watchDef = Stopwatch.StartNew();
             Console.WriteLine($"Def sum - {SumDefault(initArr)}");
@@ -275,29 +267,25 @@ namespace Calculator.UI
             Console.WriteLine($"Parallel time - {watchParallel.ElapsedMilliseconds}");
         }
 
-        private static void Task2(int[][] initArr)
+        private static void TestingMultithreadedArrayCountingWithUsingSynchronization(int[][] initArr)
         {
             var watchThreads = Stopwatch.StartNew();
-            SumFromSyncedTreads(initArr);
-            Console.WriteLine($"Synced Threads sum - {sumCounter}");
+            Console.WriteLine($"Synced Threads sum - {SumFromSyncedTreads(initArr)}");
             watchThreads.Stop();
             Console.WriteLine($"Synced Threads time - {watchThreads.ElapsedMilliseconds}");
 
             var watchParallel = Stopwatch.StartNew();
-            SumFromSyncedThreadsWithParallel(initArr);
-            Console.WriteLine($"Synced Parallel sum - {sumCounter}");
+            Console.WriteLine($"Synced Parallel sum - { SumFromSyncedThreadsWithParallel(initArr)}");
             watchParallel.Stop();
             Console.WriteLine($"Synced Parallel time - {watchParallel.ElapsedMilliseconds}");
 
             var watchThreadPool = Stopwatch.StartNew();
-            SumFromSyncedThreadPool(initArr);
-            Console.WriteLine($"Synced ThreadPool sum - {sumCounter}");
+            Console.WriteLine($"Synced ThreadPool sum - {SumFromSyncedThreadPool(initArr)}");
             watchThreadPool.Stop();
             Console.WriteLine($"Synced ThreadPool time - {watchThreadPool.ElapsedMilliseconds}");
 
             var watchTask = Stopwatch.StartNew();
-            SumWithSyncedTask(initArr);
-            Console.WriteLine($"Synced Task sum - {sumCounter}");
+            Console.WriteLine($"Synced Task sum - { SumWithSyncedTask(initArr)}");
             watchTask.Stop();
             Console.WriteLine($"Synced Task time - {watchTask.ElapsedMilliseconds}");
         }
