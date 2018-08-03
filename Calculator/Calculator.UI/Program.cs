@@ -88,10 +88,7 @@ namespace Calculator.UI
 
                 threadList.Add(new Thread(() =>
                 {
-                    lock (locker)
-                    {
-                        sumCounter += arr[index].Sum();
-                    }
+                    Interlocked.Exchange(ref sumCounter, sumCounter + arr[index].Sum());
                 }));
 
                 threadList[i].Start();
