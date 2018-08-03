@@ -159,15 +159,37 @@ namespace Calculator.UI
             {
                 var index = i;
 
-                var task = Task.Factory.StartNew(() =>
+                var task = Task.Run(() =>
+                {
+                    AddSumInVectorField(out rowSumVector[index], arr[index].Sum());
+                });
+
+                taskList.Add(task);
+            }
+
+            Task.WaitAll(taskList.ToArray());
+
+            return rowSumVector.Sum();
+        }
+
+        private static int SumPositiveNumbersWithTask(int[][] arr)
+        {
+            var taskList = new List<Task>();
+            var rowSumVector = new int[arr.Length];
+
+            for (var i = 0; i < arr.Length; i++)
+            {
+                var index = i;
+
+                var task = Task.Run(() =>
                 {
                     if (arr[index].Sum() < 0)
                     {
-                        throw new CustomException($"Error Adding in TaskId = {Task.CurrentId} Sum > 0");
+                        throw new CustomException($"Error - TaskId = {Task.CurrentId} Sum = {arr[index].Sum()}");
                     }
 
                     AddSumInVectorField(out rowSumVector[index], arr[index].Sum());
-                },TaskCreationOptions.AttachedToParent);
+                });
 
                 taskList.Add(task);
             }
@@ -177,17 +199,19 @@ namespace Calculator.UI
             }
             catch (AggregateException ae)
             {
-                foreach (var e in ae.Flatten().InnerExceptions)
-                {
-                    if(e is CustomException)
-                    {
-                        Console.WriteLine(e.Message);
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                //foreach (var e in ae.Flatten().InnerExceptions)
+                //{
+                //    if(e is CustomException)
+                //    {
+                //        Console.ForegroundColor = ConsoleColor.Red;
+                //        Console.WriteLine(e.Message);
+                //        Console.ResetColor();
+                //    }
+                //    else
+                //    {
+                //        throw;
+                //    }
+                //}
             }
 
             return rowSumVector.Sum();
