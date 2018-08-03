@@ -106,7 +106,6 @@ namespace Calculator.WPF
                 case "+":
                     {
                         rightOperand = (leftNum + rightNum).ToString();
-                       
                     }
                     break;
                 case "-":

@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Threading;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Calculator.UI
@@ -11,7 +11,7 @@ namespace Calculator.UI
     {
         private static void Main()
         {
-            var array = CreateAndInitArray(500, 70000);
+            var array = CreateAndInitArray(10, 7000);
 
             TestingMultithreadedArrayCounting(array);
 
@@ -80,7 +80,6 @@ namespace Calculator.UI
         {
             var sumCounter = 0;
             var threadList = new List<Thread>(arr.Length);
-            var locker = new object();
 
             for (var i = 0; i < arr.Length; i++)
             {
@@ -160,16 +159,36 @@ namespace Calculator.UI
             {
                 var index = i;
 
-                var task = new Task(() =>
+                var task = Task.Factory.StartNew(() =>
                 {
-                    AddSumInVectorField(out rowSumVector[index], arr[index].Sum());
-                });
+                    if (arr[index].Sum() < 0)
+                    {
+                        throw new CustomException($"Error Adding in TaskId = {Task.CurrentId} Sum > 0");
+                    }
 
-                task.Start();
+                    AddSumInVectorField(out rowSumVector[index], arr[index].Sum());
+                },TaskCreationOptions.AttachedToParent);
+
                 taskList.Add(task);
             }
-
-            Task.WaitAll(taskList.ToArray());
+            try
+            {
+                Task.WaitAll(taskList.ToArray());
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var e in ae.Flatten().InnerExceptions)
+                {
+                    if(e is CustomException)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
 
             return rowSumVector.Sum();
         }
@@ -184,7 +203,7 @@ namespace Calculator.UI
             {
                 var index = i;
 
-                var task = new Task(() =>
+                var task = Task.Run(() =>
                 {
                     lock (locker)
                     {
@@ -192,7 +211,6 @@ namespace Calculator.UI
                     }
                 });
 
-                task.Start();
                 taskList.Add(task);
             }
 
@@ -286,5 +304,10 @@ namespace Calculator.UI
             watchTask.Stop();
             Console.WriteLine($"Synced Task time - {watchTask.ElapsedMilliseconds}");
         }
+    }
+
+    public class CustomException : Exception
+    {
+        public CustomException(string message) : base(message) { }
     }
 }
