@@ -87,13 +87,33 @@ namespace Calculator.UI
 
                 threadList.Add(new Thread(() =>
                 {
-                    AddSumInVectorField(out rowSumVector[index], arr[index].Sum());
+                    try
+                    {
+                        if (arr[index].Sum() < 0)
+                        {
+                            throw new Exception($"Error in Thread with code: {Thread.CurrentThread.GetHashCode()} number not positive");
+                        }
+
+                        AddSumInVectorField(out rowSumVector[index], arr[index].Sum());
+                    }
+                    catch (Exception ex)
+                    {
+                    }
                 }));
 
                 threadList[i].Start();
             }
 
-            threadList.ForEach(th => th.Join());
+            try
+            {
+                threadList.ForEach(th => th.Join());
+            }
+            catch (Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.Message);
+                Console.ResetColor();
+            }
 
             return rowSumVector.Sum();
         }
@@ -311,6 +331,13 @@ namespace Calculator.UI
             Console.WriteLine($"Threads sum -  {SumWithThread(initArr)}");
             watchThreads.Stop();
             Console.WriteLine($"Threads time - {watchThreads.ElapsedMilliseconds} ms");
+
+            var watchThreadPositive = Stopwatch.StartNew();
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine($"Thread positive sum - {SumPositiveNumbersWithThread(initArr)}");
+            watchThreadPositive.Stop();
+            Console.WriteLine($"Thread positive numbers time - {watchThreadPositive.ElapsedMilliseconds}");
+            Console.ResetColor();
 
             var watchThreadPool = Stopwatch.StartNew();
             Console.WriteLine($"ThreadPool sum -  {SumWithThreadPool(initArr)}");
