@@ -97,7 +97,7 @@ namespace Calculator.UI
 
                         AddSumInVectorField(out rowSumVector[index], arr[index].Sum());
                     }
-                    catch (Exception ex)
+                    catch 
                     {
                         negativeNumbers++;
                     }
