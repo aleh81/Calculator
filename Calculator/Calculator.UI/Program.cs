@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Text;
 
 namespace Calculator.UI
 {
@@ -106,12 +107,20 @@ namespace Calculator.UI
                         var sum = SumVector(arr[index]);
 
                         AddSumInVectorField(out rowSumVector[index], sum);
+
+                        //throw new ArgumentException("Test exception");
                     }
                     catch (Exception ex)
                     {
+                        var strBuilder = new StringBuilder(); 
+
                         if (ex is MultiThreadingException)
                         {
                             negativeNumbers++;
+                        }
+                        else
+                        {
+                            throw;
                         }
                     }
                 }));
@@ -119,7 +128,7 @@ namespace Calculator.UI
                 threadList[i].Start();
             }
 
-            threadList.ForEach(th => th.Join());
+            threadList.ForEach(th => { th.Join(); });
 
             negativeNumCounter = negativeNumbers;
 
@@ -395,7 +404,17 @@ namespace Calculator.UI
 
             var watchThreadPositive = Stopwatch.StartNew();
             Console.ForegroundColor = ConsoleColor.Blue;
-            Console.WriteLine($"Thread positive sum - {SumPositiveNumbersWithThread(initArr, out var counterNegNumInThread)}");
+            int counterNegNumInThread = 0;
+            try
+            {
+                Console.WriteLine($"Thread positive sum - {SumPositiveNumbersWithThread(initArr, out counterNegNumInThread)}");
+            }
+            catch (Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.Message);
+                Console.ResetColor();
+            }
             watchThreadPositive.Stop();
             Console.WriteLine($"Thread positive numbers time - {watchThreadPositive.ElapsedMilliseconds}");
             Console.WriteLine($"Thread negative numbers count - {counterNegNumInThread}");
