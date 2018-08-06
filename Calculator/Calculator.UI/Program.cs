@@ -277,6 +277,8 @@ namespace Calculator.UI
 
                     var sum = SumVector(arr[index]);
 
+                    throw new ArgumentException("Test Exception");
+
                     AddSumInVectorField(out rowSumVector[index], sum);
                 });
 
@@ -405,7 +407,7 @@ namespace Calculator.UI
                     }
                     else
                     {
-                        throw;
+                        Console.WriteLine(e.Message);
                     }
                 }
             }
