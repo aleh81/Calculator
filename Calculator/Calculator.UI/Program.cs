@@ -11,7 +11,7 @@ namespace Calculator.UI
     {
         private static void Main()
         {
-            var array = CreateAndInitArray(10, 7000);
+            var array = CreateAndInitArray(1000, 100000);
 
             TestingMultithreadedArrayCounting(array);
 
@@ -27,7 +27,11 @@ namespace Calculator.UI
             var rowSumVector = new int[arr.Length];
 
             Parallel.For(0, arr.Length, index =>
-            AddSumInVectorField(out rowSumVector[index], arr[index].Sum()));
+            {
+                var sum = SumVector(arr[index]);
+
+                AddSumInVectorField(out rowSumVector[index], sum);
+            });
 
             return rowSumVector.Sum();
         }
@@ -41,9 +45,11 @@ namespace Calculator.UI
             {
                 try
                 {
+                    var sum = SumVector(arr[i]);
+
                     Monitor.Enter(locker);
 
-                    sumCounter += arr[i].Sum();
+                    sumCounter += sum;
                 }
                 finally
                 {
@@ -65,7 +71,9 @@ namespace Calculator.UI
 
                 threadList.Add(new Thread(() =>
                 {
-                    AddSumInVectorField(out rowSumVector[index], arr[index].Sum());
+                    var sum = SumVector(arr[index]);
+
+                    AddSumInVectorField(out rowSumVector[index], sum);
                 }));
 
                 threadList[i].Start();
@@ -95,11 +103,13 @@ namespace Calculator.UI
                             throw new MultiThreadingException($"Error in Thread with code: {Thread.CurrentThread.GetHashCode()} number not positive");
                         }
 
-                        AddSumInVectorField(out rowSumVector[index], arr[index].Sum());
+                        var sum = SumVector(arr[index]);
+
+                        AddSumInVectorField(out rowSumVector[index], sum);
                     }
                     catch (Exception ex)
                     {
-                        if(ex is MultiThreadingException)
+                        if (ex is MultiThreadingException)
                         {
                             negativeNumbers++;
                         }
@@ -116,7 +126,7 @@ namespace Calculator.UI
             return rowSumVector.Sum();
         }
 
-        private static int SumFromSyncedTreads(int[][] arr)
+        private static int SumFromInterlocedSyncedTreads(int[][] arr)
         {
             var sumCounter = 0;
             var threadList = new List<Thread>(arr.Length);
@@ -127,7 +137,38 @@ namespace Calculator.UI
 
                 threadList.Add(new Thread(() =>
                 {
-                    Interlocked.Exchange(ref sumCounter, sumCounter + arr[index].Sum());
+                    var sum = SumVector(arr[index]);
+
+                    Interlocked.Exchange(ref sumCounter, sumCounter + sum);
+                }));
+
+                threadList[i].Start();
+
+                threadList.ForEach(th => th.Join());
+            }
+
+            return sumCounter;
+        }
+
+        private static int SumFromLocedSyncedTreads(int[][] arr)
+        {
+            var sumCounter = 0;
+            var threadList = new List<Thread>(arr.Length);
+            var locker = new object();
+            var random = new Random();
+
+            for (var i = 0; i < arr.Length; i++)
+            {
+                var index = i;
+
+                threadList.Add(new Thread(() =>
+                {
+                    var sum = SumVector(arr[index]);
+
+                    lock (locker)
+                    {
+                        sumCounter += sum;
+                    }
                 }));
 
                 threadList[i].Start();
@@ -150,7 +191,9 @@ namespace Calculator.UI
 
                     ThreadPool.QueueUserWorkItem(delegate
                     {
-                        AddSumInVectorField(out rowSumVector[index], arr[index].Sum());
+                        var sum = SumVector(arr[index]);
+
+                        AddSumInVectorField(out rowSumVector[index], sum);
 
                         countDownEvent.Signal();
                     });
@@ -175,9 +218,11 @@ namespace Calculator.UI
 
                     ThreadPool.QueueUserWorkItem(delegate
                     {
+                        var sum = SumVector(arr[index]);
+
                         lock (locker)
                         {
-                            sumCounter += arr[index].Sum();
+                            sumCounter += sum;
                         }
 
                         countDownEvent.Signal();
@@ -201,7 +246,9 @@ namespace Calculator.UI
 
                 var task = Task.Run(() =>
                 {
-                    AddSumInVectorField(out rowSumVector[index], arr[index].Sum());
+                    var sum = SumVector(arr[index]);
+
+                    AddSumInVectorField(out rowSumVector[index], sum);
                 });
 
                 taskList.Add(task);
@@ -228,7 +275,9 @@ namespace Calculator.UI
                         throw new MultiThreadingException($"Error - TaskId = {Task.CurrentId} Sum = {arr[index].Sum()}");
                     }
 
-                    AddSumInVectorField(out rowSumVector[index], arr[index].Sum());
+                    var sum = SumVector(arr[index]);
+
+                    AddSumInVectorField(out rowSumVector[index], sum);
                 });
 
                 taskList.Add(task);
@@ -272,9 +321,11 @@ namespace Calculator.UI
 
                 var task = Task.Run(() =>
                 {
+                    var sum = SumVector(arr[index]);
+
                     lock (locker)
                     {
-                        sumCounter += arr[index].Sum();
+                        sumCounter += sum;
                     }
                 });
 
@@ -292,7 +343,9 @@ namespace Calculator.UI
 
             for (var i = 0; i < arr.Length; i++)
             {
-                AddSumInVectorField(out rowSumVector[i], arr[i].Sum());
+                var sum = SumVector(arr[i]);
+
+                AddSumInVectorField(out rowSumVector[i], sum);
             }
 
             return rowSumVector.Sum();
@@ -319,6 +372,11 @@ namespace Calculator.UI
         private static void AddSumInVectorField(out int outputVectorCell, int addingSum)
         {
             outputVectorCell = addingSum;
+        }
+
+        private static int SumVector(int[] arr)
+        {
+            return arr.Sum();
         }
 
         private static void TestingMultithreadedArrayCounting(int[][] initArr)
@@ -369,9 +427,14 @@ namespace Calculator.UI
         private static void TestingMultithreadedArrayCountingWithUsingSynchronization(int[][] initArr)
         {
             var watchThreads = Stopwatch.StartNew();
-            Console.WriteLine($"Synced Threads sum - {SumFromSyncedTreads(initArr)}");
+            Console.WriteLine($"Interlocked Synced Threads sum - {SumFromInterlocedSyncedTreads(initArr)}");
             watchThreads.Stop();
-            Console.WriteLine($"Synced Threads time - {watchThreads.ElapsedMilliseconds}");
+            Console.WriteLine($"Interlocekd Synced Threads time - {watchThreads.ElapsedMilliseconds}");
+
+            var watchThreadsWithSleep = Stopwatch.StartNew();
+            Console.WriteLine($"locked Synced Threads sum - {SumFromLocedSyncedTreads(initArr)}");
+            watchThreadsWithSleep.Stop();
+            Console.WriteLine($"locked Synced Threads time - {watchThreadsWithSleep.ElapsedMilliseconds}");
 
             var watchParallel = Stopwatch.StartNew();
             Console.WriteLine($"Synced Parallel sum - { SumFromSyncedThreadsWithParallel(initArr)}");
