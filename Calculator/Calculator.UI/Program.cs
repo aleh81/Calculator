@@ -92,14 +92,17 @@ namespace Calculator.UI
                     {
                         if (arr[index].Sum() < 0)
                         {
-                            throw new Exception($"Error in Thread with code: {Thread.CurrentThread.GetHashCode()} number not positive");
+                            throw new MultiThreadingException($"Error in Thread with code: {Thread.CurrentThread.GetHashCode()} number not positive");
                         }
 
                         AddSumInVectorField(out rowSumVector[index], arr[index].Sum());
                     }
-                    catch 
+                    catch (Exception ex)
                     {
-                        negativeNumbers++;
+                        if(ex is MultiThreadingException)
+                        {
+                            negativeNumbers++;
+                        }
                     }
                 }));
 
@@ -222,7 +225,7 @@ namespace Calculator.UI
                 {
                     if (arr[index].Sum() < 0)
                     {
-                        throw new Exception($"Error - TaskId = {Task.CurrentId} Sum = {arr[index].Sum()}");
+                        throw new MultiThreadingException($"Error - TaskId = {Task.CurrentId} Sum = {arr[index].Sum()}");
                     }
 
                     AddSumInVectorField(out rowSumVector[index], arr[index].Sum());
@@ -241,7 +244,7 @@ namespace Calculator.UI
             {
                 foreach (var e in ae.InnerExceptions)
                 {
-                    if (e is Exception)
+                    if (e is MultiThreadingException)
                     {
                         negativeNumbers++;
                     }
@@ -384,6 +387,13 @@ namespace Calculator.UI
             Console.WriteLine($"Synced Task sum - { SumWithSyncedTask(initArr)}");
             watchTask.Stop();
             Console.WriteLine($"Synced Task time - {watchTask.ElapsedMilliseconds}");
+        }
+    }
+
+    class MultiThreadingException : Exception
+    {
+        public MultiThreadingException(string message) : base(message)
+        {
         }
     }
 }
