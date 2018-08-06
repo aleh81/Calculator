@@ -76,6 +76,28 @@ namespace Calculator.UI
             return rowSumVector.Sum();
         }
 
+        private static int SumPositiveNumbersWithThread(int[][] arr)
+        {
+            var threadList = new List<Thread>(arr.Length);
+            var rowSumVector = new int[arr.Length];
+
+            for (var i = 0; i < arr.Length; i++)
+            {
+                var index = i;
+
+                threadList.Add(new Thread(() =>
+                {
+                    AddSumInVectorField(out rowSumVector[index], arr[index].Sum());
+                }));
+
+                threadList[i].Start();
+            }
+
+            threadList.ForEach(th => th.Join());
+
+            return rowSumVector.Sum();
+        }
+
         private static int SumFromSyncedTreads(int[][] arr)
         {
             var sumCounter = 0;
@@ -185,7 +207,7 @@ namespace Calculator.UI
                 {
                     if (arr[index].Sum() < 0)
                     {
-                        throw new CustomException($"Error - TaskId = {Task.CurrentId} Sum = {arr[index].Sum()}");
+                        throw new Exception($"Error - TaskId = {Task.CurrentId} Sum = {arr[index].Sum()}");
                     }
 
                     AddSumInVectorField(out rowSumVector[index], arr[index].Sum());
@@ -336,10 +358,5 @@ namespace Calculator.UI
             watchTask.Stop();
             Console.WriteLine($"Synced Task time - {watchTask.ElapsedMilliseconds}");
         }
-    }
-
-    public class CustomException : Exception
-    {
-        public CustomException(string message) : base(message) { }
     }
 }
