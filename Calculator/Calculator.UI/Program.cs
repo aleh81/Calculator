@@ -259,7 +259,7 @@ namespace Calculator.UI
             return rowSumVector.Sum();
         }
 
-        private static int SumPositiveNumbersWithTask(int[][] arr)
+        private static int SumPositiveNumbersWithTask(int[][] arr, out int counterNegativeNum)
         {
             var taskList = new List<Task>();
             var rowSumVector = new int[arr.Length];
@@ -272,20 +272,41 @@ namespace Calculator.UI
                 {
                     if (arr[index].Sum() < 0)
                     {
-                        throw new MultiThreadingException($"Error - TaskId = {Task.CurrentId} Sum = {arr[index].Sum()}");
+                        throw new MultiThreadingException($"Error - TaskId = {Task.CurrentId} Sum = {SumVector(arr[index])}");
                     }
 
                     var sum = SumVector(arr[index]);
 
-                    throw new ArgumentException("Test Exception");
-
                     AddSumInVectorField(out rowSumVector[index], sum);
+
+                    //throw new ArgumentException($"Test Exception in TaskId = {Task.CurrentId}");
                 });
 
                 taskList.Add(task);
             }
 
-            Task.WaitAll(taskList.ToArray());
+            var counterNum = 0;
+
+            try
+            {
+                Task.WaitAll(taskList.ToArray());
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var e in ae.InnerExceptions)
+                {
+                    if (e is MultiThreadingException)
+                    {
+                        counterNum++;
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
+
+            counterNegativeNum = counterNum;
 
             return rowSumVector.Sum();
         }
@@ -343,7 +364,7 @@ namespace Calculator.UI
 
                 for (var j = 0; j < arr[i].Length; j++)
                 {
-                    arr[i][j] = random.Next(-100, 100);
+                    arr[i][j] = random.Next(-100, 101);
                 }
             }
 
@@ -395,17 +416,13 @@ namespace Calculator.UI
             Console.ForegroundColor = ConsoleColor.Blue;
             try
             {
-                Console.WriteLine($"Task positive sum - {SumPositiveNumbersWithTask(initArr)}");
+                Console.WriteLine($"Task positive sum - {SumPositiveNumbersWithTask(initArr, out taskNegotiveNumbers)}");
             }
             catch (AggregateException ae)
             {
                 foreach (var e in ae.InnerExceptions)
                 {
-                    if (e is MultiThreadingException)
-                    {
-                        taskNegotiveNumbers++;
-                    }
-                    else
+                    if (!(e is MultiThreadingException))
                     {
                         Console.WriteLine(e.Message);
                     }
