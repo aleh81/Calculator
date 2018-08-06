@@ -199,7 +199,7 @@ namespace Calculator.UI
             }
             catch (AggregateException ae)
             {
-                //foreach (var e in ae.Flatten().InnerExceptions)
+                //foreach (var e in ae.InnerExceptions)
                 //{
                 //    if(e is CustomException)
                 //    {
@@ -299,6 +299,14 @@ namespace Calculator.UI
             Console.WriteLine($"Task sum -  {SumWithTask(initArr)}");
             watchTasks.Stop();
             Console.WriteLine($"Task time - {watchTasks.ElapsedMilliseconds} ms");
+
+            var watchTaskPositive = Stopwatch.StartNew();
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine($"Task positive sum - {SumPositiveNumbersWithTask(initArr)}");
+            watchTaskPositive.Stop();
+            Console.WriteLine($"Task positive time - {watchTaskPositive.ElapsedMilliseconds}");
+            Console.ResetColor();
+
 
             var watchParallel = Stopwatch.StartNew();
             Console.WriteLine($"Parallel sum - {SumWithParallel(initArr)}");
