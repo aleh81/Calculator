@@ -259,7 +259,7 @@ namespace Calculator.UI
             return rowSumVector.Sum();
         }
 
-        private static int SumPositiveNumbersWithTask(int[][] arr, out int negativeNumCounter)
+        private static int SumPositiveNumbersWithTask(int[][] arr)
         {
             var taskList = new List<Task>();
             var rowSumVector = new int[arr.Length];
@@ -283,28 +283,7 @@ namespace Calculator.UI
                 taskList.Add(task);
             }
 
-            var negativeNumbers = 0;
-
-            try
-            {
-                Task.WaitAll(taskList.ToArray());
-            }
-            catch (AggregateException ae)
-            {
-                foreach (var e in ae.InnerExceptions)
-                {
-                    if (e is MultiThreadingException)
-                    {
-                        negativeNumbers++;
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-            }
-
-            negativeNumCounter = negativeNumbers;
+            Task.WaitAll(taskList.ToArray());
 
             return rowSumVector.Sum();
         }
@@ -409,14 +388,31 @@ namespace Calculator.UI
             watchTasks.Stop();
             Console.WriteLine($"Task time - {watchTasks.ElapsedMilliseconds} ms");
 
+            var taskNegotiveNumbers = 0;
             var watchTaskPositive = Stopwatch.StartNew();
             Console.ForegroundColor = ConsoleColor.Blue;
-            Console.WriteLine($"Task positive sum - {SumPositiveNumbersWithTask(initArr, out var counterNegNumInTasks)}");
+            try
+            {
+                Console.WriteLine($"Task positive sum - {SumPositiveNumbersWithTask(initArr)}");
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var e in ae.InnerExceptions)
+                {
+                    if (e is MultiThreadingException)
+                    {
+                        taskNegotiveNumbers++;
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
             watchTaskPositive.Stop();
             Console.WriteLine($"Task positive time - {watchTaskPositive.ElapsedMilliseconds}");
-            Console.WriteLine($"Task negative numbers count - {counterNegNumInTasks}");
+            Console.WriteLine($"Task negative numbers count - {taskNegotiveNumbers}");
             Console.ResetColor();
-
 
             var watchParallel = Stopwatch.StartNew();
             Console.WriteLine($"Parallel sum - {SumWithParallel(initArr)}");
