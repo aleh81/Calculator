@@ -10,6 +10,9 @@ namespace Calculator.UI
 {
     public class Program
     {
+        public delegate void SendToMainDel(string threadName, Exception ex);
+        public static event SendToMainDel SendToMainEvent;
+
         private static void Main()
         {
             var array = CreateAndInitArray(1000, 100000);
@@ -108,19 +111,23 @@ namespace Calculator.UI
 
                         AddSumInVectorField(out rowSumVector[index], sum);
 
-                        //throw new ArgumentException("Test exception");
+                        throw new ArgumentException("Test exception");
                     }
                     catch (Exception ex)
                     {
-                        var strBuilder = new StringBuilder(); 
+                        //var strBuilder = new StringBuilder(); 
 
                         if (ex is MultiThreadingException)
                         {
                             negativeNumbers++;
                         }
-                        else
+                        //else
+                        //{
+                        //    throw;
+                        //}
+                        else if (SendToMainEvent != null)
                         {
-                            throw;
+                            SendToMainEvent(i.ToString(), ex);
                         }
                     }
                 }));
@@ -390,6 +397,11 @@ namespace Calculator.UI
             return arr.Sum();
         }
 
+        public static void ReciveOtherThreadExceptions(string threadName, Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+
         private static void TestingMultithreadedArrayCounting(int[][] initArr)
         {
             var watchDef = Stopwatch.StartNew();
@@ -405,6 +417,7 @@ namespace Calculator.UI
             var watchThreadPositive = Stopwatch.StartNew();
             Console.ForegroundColor = ConsoleColor.Blue;
             int counterNegNumInThread = 0;
+            SendToMainEvent += ReciveOtherThreadExceptions;
             try
             {
                 Console.WriteLine($"Thread positive sum - {SumPositiveNumbersWithThread(initArr, out counterNegNumInThread)}");
@@ -456,6 +469,7 @@ namespace Calculator.UI
             Console.WriteLine($"Parallel sum - {SumWithParallel(initArr)}");
             watchParallel.Stop();
             Console.WriteLine($"Parallel time - {watchParallel.ElapsedMilliseconds}");
+            //http://qaru.site/questions/364896/sending-an-exception-from-thread-to-main-thread
         }
 
         private static void TestingMultithreadedArrayCountingWithUsingSynchronization(int[][] initArr)
