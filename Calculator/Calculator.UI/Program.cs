@@ -76,10 +76,11 @@ namespace Calculator.UI
             return rowSumVector.Sum();
         }
 
-        private static int SumPositiveNumbersWithThread(int[][] arr)
+        private static int SumPositiveNumbersWithThread(int[][] arr, out int negativeNumCounter)
         {
             var threadList = new List<Thread>(arr.Length);
             var rowSumVector = new int[arr.Length];
+            var negativeNumbers = 0;
 
             for (var i = 0; i < arr.Length; i++)
             {
@@ -98,22 +99,16 @@ namespace Calculator.UI
                     }
                     catch (Exception ex)
                     {
+                        negativeNumbers++;
                     }
                 }));
 
                 threadList[i].Start();
             }
 
-            try
-            {
-                threadList.ForEach(th => th.Join());
-            }
-            catch (Exception ex)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(ex.Message);
-                Console.ResetColor();
-            }
+            threadList.ForEach(th => th.Join());
+
+            negativeNumCounter = negativeNumbers;
 
             return rowSumVector.Sum();
         }
@@ -337,9 +332,10 @@ namespace Calculator.UI
 
             var watchThreadPositive = Stopwatch.StartNew();
             Console.ForegroundColor = ConsoleColor.Blue;
-            Console.WriteLine($"Thread positive sum - {SumPositiveNumbersWithThread(initArr)}");
+            Console.WriteLine($"Thread positive sum - {SumPositiveNumbersWithThread(initArr, out var counterNegNumInThread)}");
             watchThreadPositive.Stop();
             Console.WriteLine($"Thread positive numbers time - {watchThreadPositive.ElapsedMilliseconds}");
+            Console.WriteLine($"Thread negative numbers count - {counterNegNumInThread}");
             Console.ResetColor();
 
             var watchThreadPool = Stopwatch.StartNew();
@@ -354,10 +350,10 @@ namespace Calculator.UI
 
             var watchTaskPositive = Stopwatch.StartNew();
             Console.ForegroundColor = ConsoleColor.Blue;
-            Console.WriteLine($"Task positive sum - {SumPositiveNumbersWithTask(initArr, out var counterNegNumInThread)}");
+            Console.WriteLine($"Task positive sum - {SumPositiveNumbersWithTask(initArr, out var counterNegNumInTasks)}");
             watchTaskPositive.Stop();
             Console.WriteLine($"Task positive time - {watchTaskPositive.ElapsedMilliseconds}");
-            Console.WriteLine($"Task count negative num - {counterNegNumInThread}");
+            Console.WriteLine($"Task negative numbers count - {counterNegNumInTasks}");
             Console.ResetColor();
 
 
