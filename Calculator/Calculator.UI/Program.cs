@@ -10,9 +10,6 @@ namespace Calculator.UI
 {
     public class Program
     {
-        public delegate void SendToMainDel(string code, Exception ex);
-        public static event SendToMainDel SendToMainEvent;
-
         private static void Main()
         {
             var array = CreateAndInitArray(100, 10000);
@@ -93,6 +90,7 @@ namespace Calculator.UI
             var threadList = new List<Thread>(arr.Length);
             var rowSumVector = new int[arr.Length];
             var negativeNumbers = 0;
+            var exList = new List<Exception>();
 
             for (var i = 0; i < arr.Length; i++)
             {
@@ -112,7 +110,7 @@ namespace Calculator.UI
 
                         AddSumInVectorField(out rowSumVector[index], sum);
 
-                        //throw new ArgumentException("Test exception");
+                        throw new ArgumentException("Test exception");
                     }
                     catch (Exception ex)
                     {
@@ -122,7 +120,7 @@ namespace Calculator.UI
                         }
                         else
                         {
-                            SendToMainEvent?.Invoke(Thread.CurrentThread.GetHashCode().ToString(), ex);
+                            throw;
                         }
                     }
                 }));
@@ -398,7 +396,6 @@ namespace Calculator.UI
 
             var watchThreadPositive = Stopwatch.StartNew();
             Console.ForegroundColor = ConsoleColor.Blue;
-            SendToMainEvent += ReciveOtherThreadExceptions;
             Console.WriteLine($"Thread positive sum - {SumPositiveNumbersWithThread(initArr, out var counterNegNumInThread)}");
             watchThreadPositive.Stop();
             Console.WriteLine($"Thread positive numbers time - {watchThreadPositive.ElapsedMilliseconds}");
