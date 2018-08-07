@@ -12,7 +12,7 @@ namespace Calculator.UI
     {
         private static void Main()
         {
-            var array = CreateAndInitArray(100, 10000);
+            var array = CreateAndInitArray(1000, 10000);
 
             TestingMultithreadedArrayCounting(array);
 
@@ -85,7 +85,7 @@ namespace Calculator.UI
             return rowSumVector.Sum();
         }
 
-        private static void SumPositiveNumbersWithThread(int[][] arr)
+        private static void CountPositiveNumbersWithThread(int[][] arr)
         {
             var threadList = new List<Thread>(arr.Length);
             var rowSumVector = new int[arr.Length];
@@ -94,7 +94,6 @@ namespace Calculator.UI
             for (var i = 0; i < arr.Length; i++)
             {
                 var index = i;
-
 
                 threadList.Add(new Thread(() =>
                 {
@@ -262,7 +261,7 @@ namespace Calculator.UI
             return rowSumVector.Sum();
         }
 
-        private static void SumPositiveNumbersWithTask(int[][] arr)
+        private static void CountPositiveNumbersWithTask(int[][] arr)
         {
             var taskList = new List<Task>();
             var rowSumVector = new int[arr.Length];
@@ -393,7 +392,7 @@ namespace Calculator.UI
             var countNegNumbersFromThread = 0;
             try
             {
-                SumPositiveNumbersWithThread(initArr);
+                CountPositiveNumbersWithThread(initArr);
             }
             catch (AggregateException ae)
             {
@@ -429,7 +428,7 @@ namespace Calculator.UI
             Console.ForegroundColor = ConsoleColor.Blue;
             try
             {
-                SumPositiveNumbersWithTask(initArr);
+                CountPositiveNumbersWithTask(initArr);
             }
             catch (AggregateException ae)
             {
