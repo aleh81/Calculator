@@ -85,11 +85,10 @@ namespace Calculator.UI
             return rowSumVector.Sum();
         }
 
-        private static int SumPositiveNumbersWithThread(int[][] arr, out int negativeNumCounter)
+        private static void SumPositiveNumbersWithThread(int[][] arr)
         {
             var threadList = new List<Thread>(arr.Length);
             var rowSumVector = new int[arr.Length];
-            var negativeNumbers = 0;
             var exList = new List<Exception>();
 
             for (var i = 0; i < arr.Length; i++)
@@ -110,18 +109,11 @@ namespace Calculator.UI
 
                         AddSumInVectorField(out rowSumVector[index], sum);
 
-                        throw new ArgumentException("Test exception");
+                        //throw new ArgumentException("Test exception");
                     }
                     catch (Exception ex)
                     {
-                        if (ex is MultiThreadingException)
-                        {
-                            negativeNumbers++;
-                        }
-                        else
-                        {
-                            throw;
-                        }
+                        exList.Add(ex);
                     }
                 }));
 
@@ -130,9 +122,11 @@ namespace Calculator.UI
 
             threadList.ForEach(th => { th.Join(); });
 
-            negativeNumCounter = negativeNumbers;
-
-            return rowSumVector.Sum();
+            if (exList.Count > 0)
+            {
+                throw new AggregateException(
+                    "MyExceptions", exList);
+            }
         }
 
         private static int SumFromInterlocedSyncedTreads(int[][] arr)
@@ -396,10 +390,28 @@ namespace Calculator.UI
 
             var watchThreadPositive = Stopwatch.StartNew();
             Console.ForegroundColor = ConsoleColor.Blue;
-            Console.WriteLine($"Thread positive sum - {SumPositiveNumbersWithThread(initArr, out var counterNegNumInThread)}");
+            var countNegNumbersFromThread = 0;
+            try
+            {
+                SumPositiveNumbersWithThread(initArr);
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var e in ae.InnerExceptions)
+                {
+                    if (e is MultiThreadingException)
+                    {
+                        countNegNumbersFromThread++;
+                    }
+                    else
+                    {
+                        Console.WriteLine(e.Message);
+                    }
+                }
+            }
             watchThreadPositive.Stop();
             Console.WriteLine($"Thread positive numbers time - {watchThreadPositive.ElapsedMilliseconds}");
-            Console.WriteLine($"Thread negative numbers count - {counterNegNumInThread}");
+            Console.WriteLine($"Thread negative numbers count - {countNegNumbersFromThread}");
             Console.ResetColor();
 
             var watchThreadPool = Stopwatch.StartNew();
