@@ -48,6 +48,7 @@
     <Border  CornerRadius = "30" BorderBrush="#FFB93838" Background="#FFEC6262" Padding = "20" BorderThickness="0 0 0 10" Margin="10">
 
 
+
         <Grid x:Name="Root" Background="#FFEC6262">
             <Grid.RowDefinitions>
                 <RowDefinition Height="100"/>
@@ -64,6 +65,8 @@
                 <ColumnDefinition/>
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
+
+            <TextBlock  MouseLeftButtonDown="titleBar_MouseLeftButtonDown" Margin="0,-20,5,81" Grid.ColumnSpan="4" ></TextBlock>
 
             <Rectangle  Fill="White" Grid.ColumnSpan="4" Margin="5,20,5,10" Stroke="White" StrokeThickness="8" RadiusX="17" RadiusY="17"/>
             <TextBlock x:Name="TextBlock" Grid.Column="0"   Margin="25,30,30,15" FontSize="30" Grid.ColumnSpan="4" ></TextBlock>

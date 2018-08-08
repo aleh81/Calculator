@@ -135,22 +135,6 @@ namespace Calculator.WPF
 
         }
 
-        private static void Display(TextBlock tb, string rightOperand)
-        {
-            tb.Text = rightOperand;
-        }
-
-        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Left)
-                this.DragMove();
-        }
-
-        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            this.DragMove();
-        }
-
         private void titleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             this.DragMove();
