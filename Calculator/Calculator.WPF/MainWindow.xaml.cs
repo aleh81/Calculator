@@ -23,9 +23,9 @@ namespace Calculator.WPF
     /// </summary>
     public partial class MainWindow : Window
     {
-        private string operation = null;
-        private string leftOperand = null;
-        private string rightOperand = null;
+        string leftop = ""; 
+        string operation = ""; 
+        string rightop = ""; 
 
         private static Mutex _instance;
         private const string _appName = "Calculator";
@@ -63,74 +63,99 @@ namespace Calculator.WPF
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var value = (string)((Button)e.OriginalSource).Content;
 
-            TextBlock.Text += value;
+            string s = (string)((Button)e.OriginalSource).Content;
 
-            bool result = int.TryParse(value, out var num);
+            TextBlock.Text += s;
+            int num;
+
+            bool result = Int32.TryParse(s, out num);
 
             if (result == true)
             {
                 if (operation == "")
                 {
-                    leftOperand += value;
+                    leftop += s;
                 }
                 else
                 {
-                    rightOperand += value;
+                    rightop += s;
                 }
             }
             else
             {
-                if (value == "=")
+                if (s == "=")
                 {
-                    Update_RightOperation();
-
-                    TextBlock.Text += rightOperand;
+                    Update_RightOp();
+                    TextBlock.Text += rightop;
                     operation = "";
                 }
-                else if (value == "C")
+                else if (s == "C")
                 {
-                    Clear();
+                    leftop = "";
+                    rightop = "";
+                    operation = "";
+                    TextBlock.Text = "";
+                }
+                else
+                {
+                    if (rightop != "")
+                    {
+                        Update_RightOp();
+                        leftop = rightop;
+                        rightop = "";
+                    }
+                    operation = s;
                 }
             }
         }
 
-        private void Update_RightOperation()
+        private void Update_RightOp()
         {
-            int.TryParse(leftOperand, out var leftNum);
-            int.TryParse(rightOperand, out var rightNum);
+            int num1 = Int32.Parse(leftop);
+            int num2 = Int32.Parse(rightop);
 
             switch (operation)
             {
                 case "+":
-                    {
-                        rightOperand = (leftNum + rightNum).ToString();
-                    }
+                    rightop = (num1 + num2).ToString();
                     break;
                 case "-":
-                    rightOperand = (leftNum - rightNum).ToString();
+                    rightop = (num1 - num2).ToString();
                     break;
                 case "*":
-                    rightOperand = (leftNum * rightNum).ToString();
+                    rightop = (num1 * num2).ToString();
                     break;
                 case "/":
-                    rightOperand = (leftNum / rightNum).ToString();
+                    rightop = (num1 / num2).ToString();
                     break;
             }
         }
 
         private void Clear()
         {
-            leftOperand = "";
-            rightOperand = "";
-            operation = "";
-            TextBlock.Text = "";
+
         }
 
         private static void Display(TextBlock tb, string rightOperand)
         {
             tb.Text = rightOperand;
+        }
+
+        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+                this.DragMove();
+        }
+
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            this.DragMove();
+        }
+
+        private void titleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            this.DragMove();
         }
     }
 }

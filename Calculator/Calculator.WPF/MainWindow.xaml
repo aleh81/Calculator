@@ -3,277 +3,387 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        
+        WindowStyle="None "
+        Background="Transparent"
+        AllowsTransparency="True"
+        
         xmlns:local="clr-namespace:Calculator.WPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="550" Width="400" Background="#FFEC6262">
+        Title="MainWindow" Height="550" Width="400" >
+
 
     <Window.Resources>
         <SolidColorBrush x:Key="redStyle" Color="PaleVioletRed" />
 
-        <LinearGradientBrush x:Key="gradientStyle" StartPoint="0.5,1" EndPoint="0.5,0">
-            <GradientStop Color="LightBlue" Offset="0"/>
-            <GradientStop Color="White" Offset="1"/>
+        <LinearGradientBrush x:Key="gradientStyle" StartPoint="0.5,0.9" EndPoint="0.5,0">
+            <GradientStop Color="White" Offset="1.8"/>
+            <GradientStop Color="Gray" Offset="1.5"/>
+
+            <GradientStop Color="White" Offset="0.5"/>
+            <GradientStop Color="White" Offset="0.1"/>
+
         </LinearGradientBrush>
 
-        <LinearGradientBrush x:Key="gradientGrayStyle" StartPoint="0.5,1.2" EndPoint="0.5,0">
-            <GradientStop Color="LightGray" Offset="0.4"/>
-            <GradientStop Color="White" Offset="1"/>
+        <LinearGradientBrush x:Key="gradientGrayStyle" StartPoint="0.5,0.3" EndPoint="1.0,1">
+            <GradientStop Color="LightGray" Offset="0"/>
+            <GradientStop Color="White" Offset="0.5"/>
+
+            <GradientStop Color="LightGray" Offset="0"/>
+            <GradientStop Color="White" Offset="0.5"/>
         </LinearGradientBrush>
 
-        <LinearGradientBrush x:Key="gradientForWindowtStyle" StartPoint="0.5,1.2" EndPoint="1.5,0">
+        <LinearGradientBrush x:Key="gradientForWindowtStyle" StartPoint="0.9,3.2" EndPoint="1.5,0.2">
             <GradientStop Color="LightGray" Offset="0.4"/>
             <GradientStop Color="White" Offset="0.9"/>
         </LinearGradientBrush>
 
         <Button x:Key="numberButton" Background="#FF404040">
-            
+
         </Button>
 
         <Border x:Key="borderBrushStyle" BorderBrush="SlateBlue" BorderThickness="5,10,15,20" Background="AliceBlue" Padding="5" CornerRadius="15"/>
     </Window.Resources>
 
+    <Border  CornerRadius = "30" BorderBrush="#FFB93838" Background="#FFEC6262" Padding = "20" BorderThickness="0 0 0 10" Margin="10">
 
 
-    <Grid x:Name="Root" Background="#FFEC6262">
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-        </Grid.RowDefinitions>
+        <Grid x:Name="Root" Background="#FFEC6262">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="100"/>
+                <RowDefinition Height="65"/>
+                <RowDefinition Height="65"/>
+                <RowDefinition Height="65"/>
+                <RowDefinition Height="65"/>
+                <RowDefinition Height="65"/>
+            </Grid.RowDefinitions>
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition/>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
 
-        <TextBlock x:Name="TextBlock" Grid.Column="0" Margin="25,30,30,25" Background="White" FontSize="30" Grid.ColumnSpan="4" />
+            <Rectangle  Fill="White" Grid.ColumnSpan="4" Margin="5,20,5,10" Stroke="White" StrokeThickness="8" RadiusX="17" RadiusY="17"/>
+            <TextBlock x:Name="TextBlock" Grid.Column="0"   Margin="25,30,30,15" FontSize="30" Grid.ColumnSpan="4" ></TextBlock>
+            <Rectangle  Fill="Transparent"  Grid.ColumnSpan="4" Margin="5,20,5,10" Stroke="White" StrokeThickness="8" RadiusX="17" RadiusY="17">
+                <Rectangle.Effect>
+                    <DropShadowEffect ShadowDepth="0" BlurRadius="9" Color="DarkGray"/>
+                </Rectangle.Effect>
+                <Rectangle.Clip>
+                    <RectangleGeometry Rect="0,0,400,100" RadiusX="8" RadiusY="8"/>
+                </Rectangle.Clip>
+            </Rectangle>
 
-        <Button  Grid.Column="0" Margin="9" Grid.Row="1" Background="#FF2F495A" >
-            <Button.Template>
-                <ControlTemplate>
-                    <Border CornerRadius="18" Background="#FF2F495A">
-                        <TextBlock Text="1" Foreground="White" 
+            <Button  Grid.Column="0" Margin="10,0,10,5" Grid.Row="1" Height="50" Background="#FF2F495A" >
+                <Button.Template>
+                    <ControlTemplate>
+                        <Border CornerRadius="13" Background="#FF2F495A">
+                            <TextBlock Text="1" FontWeight="Bold" Foreground="White" 
                                            HorizontalAlignment="Center"                                           
-                                           Margin="0,5,0,0"
+                                           Margin="0"
                                            Height="40"
                                            FontSize="30"></TextBlock>
-                    </Border>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
+                            <Border.Effect>
+                                <DropShadowEffect  BlurRadius="3" Opacity="0.9" Direction="281" />
+                            </Border.Effect>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+                1
+            </Button>
 
-        <Button  Grid.Column="1" Margin="9" Grid.Row="1" Background="#FF2F495A" >
-            <Button.Template>
-                <ControlTemplate>
-                    <Border CornerRadius="18" Background="#FF2F495A">
-                        <TextBlock Text="2" Foreground="White" 
+            <Button  Grid.Column="1" Margin="10,0,10,5" Grid.Row="1" Height="50" Background="#FF2F495A" >
+                <Button.Template>
+                    <ControlTemplate>
+                        <Border CornerRadius="13" Background="#FF2F495A">
+                            <TextBlock Text="2" FontWeight="Bold" Foreground="White" 
                                            HorizontalAlignment="Center"                                           
-                                           Margin="0,5,0,0"
+                                           Margin="0"
                                            Height="40"
                                            FontSize="30"></TextBlock>
-                    </Border>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
+                            <Border.Effect>
+                                <DropShadowEffect  BlurRadius="3" Opacity="0.9" Direction="281" />
+                            </Border.Effect>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+                2
+            </Button>
 
-        <Button  Grid.Column="2" Grid.Row="1" Margin="9" Background="#FF2F495A" >
-            <Button.Template>
-                <ControlTemplate>
-                    <Border CornerRadius="18" Background="#FF2F495A">
-                        <TextBlock Text="3" Foreground="White" 
+            <Button  Grid.Column="2" Grid.Row="1" Margin="10,0,10,5" Height="50" Background="#FF2F495A" >
+                <Button.Template>
+                    <ControlTemplate>
+                        <Border CornerRadius="13" Background="#FF2F495A">
+                            <TextBlock Text="3" FontWeight="Bold" Foreground="White" 
                                            HorizontalAlignment="Center"                                           
-                                           Margin="0,5,0,0"
+                                            Margin="0"
                                            Height="40"
                                            FontSize="30"></TextBlock>
-                    </Border>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
+                            <Border.Effect>
+                                <DropShadowEffect  BlurRadius="3" Opacity="0.9" Direction="281" />
+                            </Border.Effect>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+                3
+            </Button>
 
-        <Button  Grid.Column="3" Grid.Row="1" Margin="9" Background="#FF2F495A" >
-            <Button.Template>
-                <ControlTemplate>
-                    <Border CornerRadius="18" Background="#FF2F495A">
-                        <TextBlock Text="4" Foreground="White" 
+            <Button  Grid.Column="3" Grid.Row="1" Margin="10,0,10,5" Height="50" Background="#FF2F495A" >
+                <Button.Template>
+                    <ControlTemplate>
+                        <Border CornerRadius="13" Background="#FF2F495A">
+                            <TextBlock Text="4" FontWeight="Bold" Foreground="White" 
                                            HorizontalAlignment="Center"                                           
-                                           Margin="0,5,0,0"
+                                            Margin="0"
                                            Height="40"
                                            FontSize="30"></TextBlock>
-                    </Border>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
+                            <Border.Effect>
+                                <DropShadowEffect  BlurRadius="3" Opacity="0.9" Direction="281" />
+                            </Border.Effect>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+                4
+            </Button>
 
-        <Button  Grid.Column="0" Grid.Row="2" Margin="9" Background="#FF2F495A" >
-            <Button.Template>
-                <ControlTemplate>
-                    <Border CornerRadius="18" Background="#FF2F495A">
-                        <TextBlock Text="5" Foreground="White" 
+            <Button  Grid.Column="0" Grid.Row="2" Margin="10,0,10,5" Height="50" Background="#FF2F495A" >
+                <Button.Template>
+                    <ControlTemplate>
+                        <Border CornerRadius="13" Background="#FF2F495A">
+                            <TextBlock Text="5" FontWeight="Bold" Foreground="White" 
                                            HorizontalAlignment="Center"                                           
-                                           Margin="0,5,0,0"
+                                            Margin="0"
                                            Height="40"
                                            FontSize="30"></TextBlock>
-                    </Border>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
+                            <Border.Effect>
+                                <DropShadowEffect  BlurRadius="3" Opacity="0.9" Direction="281" />
+                            </Border.Effect>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+                5
+            </Button>
 
-        <Button  Grid.Column="1" Grid.Row="2" Margin="9" Background="#FF2F495A" >
-            <Button.Template>
-                <ControlTemplate>
-                    <Border CornerRadius="18" Background="#FF2F495A">
-                        <TextBlock Text="6" Foreground="White" 
+            <Button  Grid.Column="1" Grid.Row="2" Margin="10,0,10,5" Height="50" Background="#FF2F495A" >
+                <Button.Template>
+                    <ControlTemplate>
+                        <Border CornerRadius="13" Background="#FF2F495A">
+                            <TextBlock Text="6" FontWeight="Bold" Foreground="White" 
                                            HorizontalAlignment="Center"                                           
-                                           Margin="0,5,0,0"
+                                            Margin="0"
                                            Height="40"
                                            FontSize="30"></TextBlock>
-                    </Border>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
+                            <Border.Effect>
+                                <DropShadowEffect  BlurRadius="3" Opacity="0.9" Direction="281" />
+                            </Border.Effect>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+                6
+            </Button>
 
-        <Button  Grid.Column="2" Grid.Row="2" Margin="9" Background="#FF2F495A" >
-            <Button.Template>
-                <ControlTemplate>
-                    <Border CornerRadius="18" Background="#FF2F495A">
-                        <TextBlock Text="7" Foreground="White" 
+            <Button  Grid.Column="2" Grid.Row="2" Margin="10,0,10,5" Height="50" Background="#FF2F495A" >
+                <Button.Template>
+                    <ControlTemplate>
+                        <Border CornerRadius="13" Background="#FF2F495A">
+                            <TextBlock Text="7" FontWeight="Bold" Foreground="White" 
                                            HorizontalAlignment="Center"                                           
-                                           Margin="0,5,0,0"
+                                            Margin="0"
                                            Height="40"
                                            FontSize="30"></TextBlock>
-                    </Border>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
+                            <Border.Effect>
+                                <DropShadowEffect  BlurRadius="3" Opacity="0.9" Direction="281" />
+                            </Border.Effect>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+                7
+            </Button>
 
-        <Button  Grid.Column="3" Grid.Row="2" Margin="9" Background="#FF2F495A" >
-            <Button.Template>
-                <ControlTemplate>
-                    <Border CornerRadius="18" Background="#FF2F495A">
-                        <TextBlock Text="8" Foreground="White" 
+            <Button  Grid.Column="3" Grid.Row="2" Margin="10,0,10,5" Height="50" Background="#FF2F495A" >
+                <Button.Template>
+                    <ControlTemplate>
+                        <Border CornerRadius="13" Background="#FF2F495A">
+                            <TextBlock Text="8" FontWeight="Bold" Foreground="White" 
                                            HorizontalAlignment="Center"                                           
-                                           Margin="0,5,0,0"
+                                           Margin="0"
                                            Height="40"
                                            FontSize="30"></TextBlock>
-                    </Border>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
+                            <Border.Effect>
+                                <DropShadowEffect  BlurRadius="3" Opacity="0.9" Direction="281" />
+                            </Border.Effect>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+                8
+            </Button>
 
-        <Button  Grid.Column="0" Grid.Row="3" Margin="9" Background="#FF2F495A" >
-            <Button.Template>
-                <ControlTemplate>
-                    <Border CornerRadius="18" Background="#FF2F495A">
-                        <TextBlock Text="9" Foreground="White" 
+            <Button  Grid.Column="0" Grid.Row="3" Margin="10,0,10,5" Height="50" Background="#FF2F495A" >
+                <Button.Template>
+                    <ControlTemplate>
+                        <Border CornerRadius="13" Background="#FF2F495A">
+                            <TextBlock Text="9" FontWeight="Bold" Foreground="White" 
                                            HorizontalAlignment="Center"                                           
-                                           Margin="0,5,0,0"
+                                            Margin="0"
                                            Height="40"
                                            FontSize="30"></TextBlock>
-                    </Border>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
+                            <Border.Effect>
+                                <DropShadowEffect  BlurRadius="3" Opacity="0.9" Direction="281" />
+                            </Border.Effect>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+                9
+            </Button>
 
-        <Button  Grid.Column="1" Grid.Row="3" Margin="9" Background="#FF2F495A" >
-            <Button.Template>
-                <ControlTemplate>
-                    <Border CornerRadius="18" Background="#FF2F495A">
-                        <TextBlock Text="0" Foreground="White" 
+            <Button  Grid.Column="1" Grid.Row="3" Margin="10,0,10,5" Height="50" Background="#FF2F495A" >
+                <Button.Template>
+                    <ControlTemplate>
+                        <Border CornerRadius="13" Background="#FF2F495A">
+                            <TextBlock Text="0" FontWeight="Bold" Foreground="White" 
                                            HorizontalAlignment="Center"                                           
-                                           Margin="0,5,0,0"
+                                           Margin="0"
                                            Height="40"
                                            FontSize="30"></TextBlock>
-                    </Border>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
+                            <Border.Effect>
+                                <DropShadowEffect  BlurRadius="3" Opacity="0.9" Direction="281" />
+                            </Border.Effect>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+                0
+            </Button>
 
-        <Button  Grid.Column="2" Grid.Row="3" Margin="9" Background="#FF2F495A" >
-            <Button.Template>
-                <ControlTemplate>
-                    <Border CornerRadius="18" Background="#FF2F495A">
-                        <TextBlock Text="+" Foreground="White" 
+            <Button  Grid.Column="2" Grid.Row="3" Margin="10,0,10,5" Height="50" Background="#FF2F495A" >
+                <Button.Template>
+                    <ControlTemplate>
+                        <Border CornerRadius="13" Background="#FF2F495A">
+                            <TextBlock Text="+" FontWeight="Bold" Foreground="White" 
                                            HorizontalAlignment="Center"                                           
-                                           Margin="0,5,0,0"
+                                           Margin="0"
                                            Height="40"
                                            FontSize="30"></TextBlock>
-                    </Border>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
+                            <Border.Effect>
+                                <DropShadowEffect  BlurRadius="3" Opacity="0.9" Direction="281" />
+                            </Border.Effect>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+                +
+            </Button>
 
-        <Button  Grid.Column="3" Grid.Row="3" Margin="9" Background="#FF2F495A" >
-            <Button.Template>
-                <ControlTemplate>
-                    <Border CornerRadius="18" Background="#FF2F495A">
-                        <TextBlock Text="-" Foreground="White" 
+            <Button  Grid.Column="3" Grid.Row="3" Margin="10,0,10,5" Height="50" Background="#FF2F495A" >
+                <Button.Template>
+                    <ControlTemplate>
+                        <Border CornerRadius="13" Background="#FF2F495A">
+                            <TextBlock Text="-" FontWeight="Bold" Foreground="White" 
                                            HorizontalAlignment="Center"                                           
-                                           Margin="0,5,0,0"
+                                           Margin="0"
                                            Height="40"
                                            FontSize="30"></TextBlock>
-                    </Border>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
+                            <Border.Effect>
+                                <DropShadowEffect  BlurRadius="3" Opacity="0.9" Direction="281" />
+                            </Border.Effect>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+                -
+            </Button>
 
-        <Button  Grid.Column="0" Grid.Row="4" Margin="9" Background="#FF2F495A" >
-            <Button.Template>
-                <ControlTemplate>
-                    <Border CornerRadius="18" Background="#FF2F495A">
-                        <TextBlock Text="C" Foreground="White" 
+            <Button  Grid.Column="0" Grid.Row="4" Margin="10,0,10,5" Height="50" Background="#FF2F495A" >
+                <Button.Template>
+                    <ControlTemplate>
+                        <Border CornerRadius="13" Background="#FF2F495A">
+                            <TextBlock Text="*" FontWeight="Bold" Foreground="White" 
                                            HorizontalAlignment="Center"                                           
-                                           Margin="0,5,0,0"
+                                           Margin="0,7,0,0"
                                            Height="40"
                                            FontSize="30"></TextBlock>
-                    </Border>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
+                            <Border.Effect>
+                                <DropShadowEffect  BlurRadius="3" Opacity="0.9" Direction="281" />
+                            </Border.Effect>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+                *
+            </Button>
 
-        <Button  Grid.Column="1" Grid.Row="4" Margin="9" Background="#FF2F495A" >
-            <Button.Template>
-                <ControlTemplate>
-                    <Border CornerRadius="18" Background="#FF2F495A">
-                        <TextBlock Text="/" Foreground="White" 
+            <Button  Grid.Column="1" Grid.Row="4" Margin="10,0,10,5" Height="50" Background="#FF2F495A" >
+                <Button.Template>
+                    <ControlTemplate>
+                        <Border CornerRadius="13" Background="#FF2F495A">
+                            <TextBlock Text="/" FontWeight="Bold" Foreground="White" 
                                            HorizontalAlignment="Center"                                           
-                                           Margin="0,5,0,0"
+                                           Margin="0"
                                            Height="40"
                                            FontSize="30"></TextBlock>
-                    </Border>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
+                            <Border.Effect>
+                                <DropShadowEffect  BlurRadius="3" Opacity="0.9" Direction="281" />
+                            </Border.Effect>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+                /
+            </Button>
 
-        <Button  Grid.Column="2" Grid.Row="4" Margin="9" Background="#FF2F495A" >
-            <Button.Template>
-                <ControlTemplate>
-                    <Border CornerRadius="18" Background="#FF2F495A">
-                        <TextBlock Text="*" Foreground="White" 
+            <Button  Grid.Column="2" Grid.Row="4" Margin="10,5,10,0" Background="#FF2F495A" Grid.RowSpan="2" >
+                <Button.Template>
+                    <ControlTemplate>
+                        <Border CornerRadius="13" Background="#FF2F495A">
+                            <TextBlock Text="C" FontWeight="Bold" Foreground="White" 
                                            HorizontalAlignment="Center"                                           
-                                           Margin="0,5,0,0"
+                                           Margin="0"
                                            Height="40"
                                            FontSize="30"></TextBlock>
-                    </Border>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
-        <Button  Grid.Column="3" Grid.Row="4" Margin="9" Background="#FF2F495A" >
-            <Button.Template>
-                <ControlTemplate>
-                    <Border CornerRadius="18" Background="#FF2F495A">
-                        <TextBlock Text="=" Foreground="White" 
+                            <Border.Effect>
+                                <DropShadowEffect  BlurRadius="3" Opacity="0.9" Direction="281" />
+                            </Border.Effect>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+                C
+            </Button>
+            <Button  Grid.Column="3" Grid.Row="4" Margin="10,5,10,0" Background="#FF2F495A" Grid.RowSpan="2" >
+                <Button.Template>
+                    <ControlTemplate>
+                        <Border CornerRadius="13" Background="#FF2F495A">
+                            <TextBlock Text="=" FontWeight="Bold" Foreground="White" 
                                            HorizontalAlignment="Center"                                           
-                                           Margin="0,5,0,0"
+                                           Margin="0"
                                            Height="40"
                                            FontSize="30"></TextBlock>
-                    </Border>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
-     
-    </Grid>
+                            <Border.Effect>
+                                <DropShadowEffect  BlurRadius="3" Opacity="0.9" Direction="281" />
+                            </Border.Effect>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+                =
+            </Button>
+
+            <Button  Grid.Column="0" Grid.Row="5" Margin="10,5,10,0" Background="#FF2F495A" Grid.ColumnSpan="2" >
+                <Button.Template>
+                    <ControlTemplate>
+                        <Border CornerRadius="13" Background="#FF2F495A">
+                            <TextBlock Text="Off"  Foreground="White" 
+                                           HorizontalAlignment="Center"                                           
+                                           Margin="0"
+                                           Height="40"
+                                           FontSize="30"></TextBlock>
+                            <Border.Effect>
+                                <DropShadowEffect  BlurRadius="3" Opacity="0.9" Direction="281" />
+                            </Border.Effect>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+                Off
+            </Button>
+
+        </Grid>
+        <Border.Effect>
+            <DropShadowEffect ShadowDepth="1" BlurRadius="8"/>
+        </Border.Effect>
+    </Border>
 </Window>
