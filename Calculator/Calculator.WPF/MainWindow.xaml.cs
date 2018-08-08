@@ -23,18 +23,16 @@ namespace Calculator.WPF
     /// </summary>
     public partial class MainWindow : Window
     {
-        string leftop = ""; 
-        string operation = ""; 
-        string rightop = ""; 
+        string _leftop = ""; 
+        string _operation = ""; 
+        string _rightop = ""; 
 
         private static Mutex _instance;
-        private const string _appName = "Calculator";
+        private const string AppName = "Calculator";
 
         public MainWindow()
         {
-            bool tryCreateNewApp;
-
-            _instance = new Mutex(true, _appName, out tryCreateNewApp);
+            _instance = new Mutex(true, AppName, out var tryCreateNewApp);
 
             if (tryCreateNewApp)
             {
@@ -42,15 +40,15 @@ namespace Calculator.WPF
 
                 foreach (UIElement el in Root.Children)
                 {
-                    if (el is Button)
+                    if (el is Button button)
                     {
-                        ((Button)el).Click += Button_Click;
+                        button.Click += Button_Click;
                     }
                 }
             }
             else
             {
-                MessageBox.Show($"Приложение {_appName} уже запущено");
+                MessageBox.Show($"Приложение {AppName} уже запущено");
 
                 var targetProcess = Process.GetCurrentProcess();
 
@@ -67,67 +65,67 @@ namespace Calculator.WPF
             string s = (string)((Button)e.OriginalSource).Content;
 
             TextBlock.Text += s;
-            int num;
 
-            bool result = Int32.TryParse(s, out num);
+            var result = double.TryParse(s, out var num);
 
-            if (result == true)
+            if (result)
             {
-                if (operation == "")
+                if (_operation == "")
                 {
-                    leftop += s;
+                    _leftop += s;
                 }
                 else
                 {
-                    rightop += s;
+                    _rightop += s;
                 }
             }
             else
             {
-                if (s == "=")
+                switch (s)
                 {
-                    Update_RightOp();
-                    TextBlock.Text += rightop;
-                    operation = "";
-                }
-                else if (s == "C")
-                {
-                    leftop = "";
-                    rightop = "";
-                    operation = "";
-                    TextBlock.Text = "";
-                }
-                else
-                {
-                    if (rightop != "")
-                    {
+                    case "=":
                         Update_RightOp();
-                        leftop = rightop;
-                        rightop = "";
-                    }
-                    operation = s;
+                        TextBlock.Text = "";
+                        TextBlock.Text += _rightop;
+                        _operation = "";
+                        break;
+                    case "C":
+                        _leftop = "";
+                        _rightop = "";
+                        _operation = "";
+                        TextBlock.Text = "";
+                        break;
+                    default:
+                        if (_rightop != "")
+                        {
+                            Update_RightOp();
+                            _leftop = _rightop;
+                            _rightop = "";
+                        }
+                        _operation = s;
+                        break;
                 }
             }
         }
 
         private void Update_RightOp()
         {
-            int num1 = Int32.Parse(leftop);
-            int num2 = Int32.Parse(rightop);
+            double.TryParse(_leftop, out var num1);
+            double.TryParse(_rightop, out var num2);
 
-            switch (operation)
+            switch (_operation)
             {
                 case "+":
-                    rightop = (num1 + num2).ToString();
+                    _rightop = (num1 + num2).ToString();
                     break;
                 case "-":
-                    rightop = (num1 - num2).ToString();
+                    _rightop = (num1 - num2).ToString();
                     break;
                 case "*":
-                    rightop = (num1 * num2).ToString();
+                    _rightop = (num1 * num2).ToString();
                     break;
                 case "/":
-                    rightop = (num1 / num2).ToString();
+                    _rightop = (num1 / num2).ToString();
                     break;
             }
         }
