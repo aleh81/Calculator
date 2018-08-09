@@ -79,7 +79,7 @@ namespace Calculator.WPF.Services
 
         private void OnCounterChanged(string value)
         {
-            CounterChanged?.Invoke(this, new CounterChangedEventArgs("+"));
+            CounterChanged?.Invoke(this, new CounterChangedEventArgs(value));
         }
 
         public void DataEventHandler(object sender, DataChangedEventArgs e)

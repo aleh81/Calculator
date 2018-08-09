@@ -83,28 +83,28 @@ namespace Calculator.WPF
                     _rightop += s;
                 }
             }
-            else
-            {
-                switch (s)
-                {
-                    case "C":
-                        _leftop = "";
-                        _rightop = "";
-                        _operation = "";
-                        TextBlock.Text = "";
-                        ResultTextBlock.Text = "";
-                        break;
-                    case "Off":
-                       // MessageBox.Show("Close");
-                        var targetProcess = Process.GetCurrentProcess();
+            //else
+            //{
+            //    switch (s)
+            //    {
+            //        case "C":
+            //            _leftop = "";
+            //            _rightop = "";
+            //            _operation = "";
+            //            TextBlock.Text = "";
+            //            ResultTextBlock.Text = "";
+            //            break;
+            //        case "Off":
+            //            // MessageBox.Show("Close");
+            //            var targetProcess = Process.GetCurrentProcess();
 
-                        targetProcess.CloseMainWindow();
-                        targetProcess.Close();
+            //            targetProcess.CloseMainWindow();
+            //            targetProcess.Close();
 
-                        Environment.Exit(0);
-                        break;
-                }
-            }
+            //            Environment.Exit(0);
+            //            break;
+            //    }
+            //}
         }
 
         private void titleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -116,10 +116,24 @@ namespace Calculator.WPF
         {
             var value = TextBlock.Text;
 
-            OnDataChanged(value);
-        }
+            if (value.Contains("Off"))
+            {
+                var targetProcess = Process.GetCurrentProcess();
+                targetProcess.CloseMainWindow();
+                targetProcess.Close();
 
-        
+                Environment.Exit(0);
+            }
+            else if (value.Contains("C"))
+            {
+                TextBlock.Text = "";
+                ResultTextBlock.Text = "";
+            }
+            else
+            {
+                OnDataChanged(value);
+            }
+        }
 
         private void CounterEventHandler(object sender, CounterChangedEventArgs e)
         {
