@@ -23,12 +23,11 @@ namespace Calculator.WPF
     /// </summary>
     public partial class MainWindow : Window
     {
+        public event EventHandler<DataChangedEventArgs> DataChanged;
+
         string _leftop = "";
         string _operation = "";
         string _rightop = "";
-
-        Thread thread;
-        Parser parser;
 
         private static Mutex _instance;
         private const string AppName = "Calculator";
@@ -37,15 +36,11 @@ namespace Calculator.WPF
         {
             _instance = new Mutex(true, AppName, out var tryCreateNewApp);
 
-            parser = new Parser();
-            parser.CounterChanged += CounterEventHandler;
-
-            thread = new Thread(new ParameterizedThreadStart(parser.Count));
-            thread.Start("1+2");
-
             if (tryCreateNewApp)
             {
                 InitializeComponent();
+
+                DoAsyncWork();
 
                 foreach (UIElement el in Root.Children)
                 {
@@ -112,8 +107,6 @@ namespace Calculator.WPF
             }
         }
 
-
-
         private void titleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             this.DragMove();
@@ -121,29 +114,34 @@ namespace Calculator.WPF
 
         private void TextChangedEventHandler(object sender, TextChangedEventArgs arg)
         {
-            //ResultTextBlock.Text = "";
-            //var text = TextBlock.Text;
-            //var parser = new Parser();
+            var value = TextBlock.Text;
 
-            //var task = new Task<string>(() => parser.Count(text));
-
-            //task.Start();
-
-            //task.Wait();
-
-            //var value = task.Result;
-
-            //if (value != null)
-            //{
-            //    ResultTextBlock.Text = value;
-            //}
+            OnDataChanged(value);
         }
 
         
 
         private void CounterEventHandler(object sender, CounterChangedEventArgs e)
         {
-            ResultTextBlock.Text = e.Value;
+            ResultTextBlock.Text += e.Value;
+        }
+
+        private void OnDataChanged(string value)
+        {
+            DataChanged?.Invoke(this, new DataChangedEventArgs(value));
+        }
+
+        public void DoAsyncWork()
+        {
+            new Thread(new ThreadStart(() =>
+            {
+                var parser = new Parser();
+
+                parser.CounterChanged += CounterEventHandler;
+
+                DataChanged += parser.DataEventHandler;
+
+            })).Start();
         }
     }
 }

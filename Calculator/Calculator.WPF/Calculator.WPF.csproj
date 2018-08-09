@@ -56,6 +56,7 @@
     </ApplicationDefinition>
     <Compile Include="Calculator.cs" />
     <Compile Include="Services\CounterChangedEventArgs.cs" />
+    <Compile Include="Services\DataChangedEventArgs.cs" />
     <Compile Include="Services\Parser.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

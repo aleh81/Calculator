@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace Calculator.WPF.Services
 {
@@ -78,10 +79,12 @@ namespace Calculator.WPF.Services
 
         private void OnCounterChanged(string value)
         {
-            if (CounterChanged != null)
-            {
-                CounterChanged.Invoke(this, new CounterChangedEventArgs(value));
-            }
+            CounterChanged?.Invoke(this, new CounterChangedEventArgs("+"));
+        }
+
+        public void DataEventHandler(object sender, DataChangedEventArgs e)
+        {
+            Count(e.Value);
         }
     }
 }
