@@ -10,7 +10,7 @@
         
         xmlns:local="clr-namespace:Calculator.WPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="550" Width="400" >
+        Title="MainWindow" Height="630" Width="400" >
 
 
     <Window.Resources>
@@ -52,6 +52,7 @@
         <Grid x:Name="Root" Background="#FFEC6262">
             <Grid.RowDefinitions>
                 <RowDefinition Height="100"/>
+                <RowDefinition Height="100"/>
                 <RowDefinition Height="65"/>
                 <RowDefinition Height="65"/>
                 <RowDefinition Height="65"/>
@@ -66,10 +67,10 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
-            <TextBlock  MouseLeftButtonDown="titleBar_MouseLeftButtonDown" Margin="0,-20,5,81" Grid.ColumnSpan="4" ></TextBlock>
+            <TextBlock  MouseLeftButtonDown="titleBar_MouseLeftButtonDown"  Margin="0,-20,5,81" Grid.ColumnSpan="4" ></TextBlock>
 
             <Rectangle  Fill="White" Grid.ColumnSpan="4" Margin="5,20,5,10" Stroke="White" StrokeThickness="8" RadiusX="17" RadiusY="17"/>
-            <TextBlock x:Name="TextBlock" Grid.Column="0"   Margin="25,30,30,15" FontSize="30" Grid.ColumnSpan="4" ></TextBlock>
+            <TextBox x:Name="TextBlock" TextChanged="TextChangedEventHandler" Grid.Column="0"   Margin="25,30,30,19" FontSize="30" Grid.ColumnSpan="4" ></TextBox>
             <Rectangle  Fill="Transparent"  Grid.ColumnSpan="4" Margin="5,20,5,10" Stroke="White" StrokeThickness="8" RadiusX="17" RadiusY="17">
                 <Rectangle.Effect>
                     <DropShadowEffect ShadowDepth="0" BlurRadius="9" Color="DarkGray"/>
@@ -79,7 +80,29 @@
                 </Rectangle.Clip>
             </Rectangle>
 
-            <Button  Grid.Column="0" Margin="10,0,10,5" Grid.Row="1" Height="50" Background="#FF2F495A" >
+
+
+            <Rectangle  Fill="White" Grid.ColumnSpan="4" Margin="5,13,5,24" Stroke="White" StrokeThickness="8" RadiusX="17" RadiusY="17" RenderTransformOrigin="0.5,0.5" Grid.Row="1"/>
+            <TextBlock  x:Name="ResultTextBlock" Grid.Column="0"   Margin="25,22,30,24" FontSize="30" Grid.ColumnSpan="4" Grid.Row="1" />
+            <Rectangle  Fill="Transparent"  Grid.ColumnSpan="4" Margin="5,79,5,16" Stroke="White" StrokeThickness="8" RadiusX="17" RadiusY="17"  Grid.Row="1" Grid.RowSpan="2">
+                <Rectangle.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform ScaleY="-1"/>
+                        <SkewTransform/>
+                        <RotateTransform/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Rectangle.RenderTransform>
+                <Rectangle.Effect>
+                    <DropShadowEffect ShadowDepth="0" BlurRadius="9" Color="DarkGray"/>
+                </Rectangle.Effect>
+                <Rectangle.Clip>
+                    <RectangleGeometry Rect="0,0,400,100" RadiusX="8" RadiusY="8"/>
+                </Rectangle.Clip>
+            </Rectangle>
+
+
+            <Button  Grid.Column="0" Margin="10,0,10,5" Grid.Row="2" Height="50" Background="#FF2F495A" >
                 <Button.Template>
                     <ControlTemplate>
                         <Border CornerRadius="13" Background="#FF2F495A">
@@ -97,7 +120,7 @@
                 1
             </Button>
 
-            <Button  Grid.Column="1" Margin="10,0,10,5" Grid.Row="1" Height="50" Background="#FF2F495A" >
+            <Button  Grid.Column="1" Margin="10,0,10,5" Grid.Row="2" Height="50" Background="#FF2F495A" >
                 <Button.Template>
                     <ControlTemplate>
                         <Border CornerRadius="13" Background="#FF2F495A">
@@ -115,7 +138,7 @@
                 2
             </Button>
 
-            <Button  Grid.Column="2" Grid.Row="1" Margin="10,0,10,5" Height="50" Background="#FF2F495A" >
+            <Button  Grid.Column="2" Grid.Row="2" Margin="10,0,10,5" Height="50" Background="#FF2F495A" >
                 <Button.Template>
                     <ControlTemplate>
                         <Border CornerRadius="13" Background="#FF2F495A">
@@ -133,7 +156,7 @@
                 3
             </Button>
 
-            <Button  Grid.Column="3" Grid.Row="1" Margin="10,0,10,5" Height="50" Background="#FF2F495A" >
+            <Button  Grid.Column="3" Grid.Row="2" Margin="10,0,10,5" Height="50" Background="#FF2F495A" >
                 <Button.Template>
                     <ControlTemplate>
                         <Border CornerRadius="13" Background="#FF2F495A">
@@ -151,7 +174,7 @@
                 4
             </Button>
 
-            <Button  Grid.Column="0" Grid.Row="2" Margin="10,0,10,5" Height="50" Background="#FF2F495A" >
+            <Button  Grid.Column="0" Grid.Row="3" Margin="10,0,10,5" Height="50" Background="#FF2F495A" >
                 <Button.Template>
                     <ControlTemplate>
                         <Border CornerRadius="13" Background="#FF2F495A">
@@ -169,7 +192,7 @@
                 5
             </Button>
 
-            <Button  Grid.Column="1" Grid.Row="2" Margin="10,0,10,5" Height="50" Background="#FF2F495A" >
+            <Button  Grid.Column="1" Grid.Row="3" Margin="10,0,10,5" Height="50" Background="#FF2F495A" >
                 <Button.Template>
                     <ControlTemplate>
                         <Border CornerRadius="13" Background="#FF2F495A">
@@ -187,7 +210,7 @@
                 6
             </Button>
 
-            <Button  Grid.Column="2" Grid.Row="2" Margin="10,0,10,5" Height="50" Background="#FF2F495A" >
+            <Button  Grid.Column="2" Grid.Row="3" Margin="10,0,10,5" Height="50" Background="#FF2F495A" >
                 <Button.Template>
                     <ControlTemplate>
                         <Border CornerRadius="13" Background="#FF2F495A">
@@ -205,7 +228,7 @@
                 7
             </Button>
 
-            <Button  Grid.Column="3" Grid.Row="2" Margin="10,0,10,5" Height="50" Background="#FF2F495A" >
+            <Button  Grid.Column="3" Grid.Row="3" Margin="10,0,10,5" Height="50" Background="#FF2F495A" >
                 <Button.Template>
                     <ControlTemplate>
                         <Border CornerRadius="13" Background="#FF2F495A">
@@ -223,7 +246,7 @@
                 8
             </Button>
 
-            <Button  Grid.Column="0" Grid.Row="3" Margin="10,0,10,5" Height="50" Background="#FF2F495A" >
+            <Button  Grid.Column="0" Grid.Row="4" Margin="10,0,10,5" Height="50" Background="#FF2F495A" >
                 <Button.Template>
                     <ControlTemplate>
                         <Border CornerRadius="13" Background="#FF2F495A">
@@ -241,7 +264,7 @@
                 9
             </Button>
 
-            <Button  Grid.Column="1" Grid.Row="3" Margin="10,0,10,5" Height="50" Background="#FF2F495A" >
+            <Button  Grid.Column="1" Grid.Row="4" Margin="10,0,10,5" Height="50" Background="#FF2F495A" >
                 <Button.Template>
                     <ControlTemplate>
                         <Border CornerRadius="13" Background="#FF2F495A">
@@ -259,7 +282,7 @@
                 0
             </Button>
 
-            <Button  Grid.Column="2" Grid.Row="3" Margin="10,0,10,5" Height="50" Background="#FF2F495A" >
+            <Button  Grid.Column="2" Grid.Row="4" Margin="10,0,10,5" Height="50" Background="#FF2F495A" >
                 <Button.Template>
                     <ControlTemplate>
                         <Border CornerRadius="13" Background="#FF2F495A">
@@ -277,7 +300,7 @@
                 +
             </Button>
 
-            <Button  Grid.Column="3" Grid.Row="3" Margin="10,0,10,5" Height="50" Background="#FF2F495A" >
+            <Button  Grid.Column="3" Grid.Row="4" Margin="10,0,10,5" Height="50" Background="#FF2F495A" >
                 <Button.Template>
                     <ControlTemplate>
                         <Border CornerRadius="13" Background="#FF2F495A">
@@ -295,7 +318,7 @@
                 -
             </Button>
 
-            <Button  Grid.Column="0" Grid.Row="4" Margin="10,0,10,5" Height="50" Background="#FF2F495A" >
+            <Button  Grid.Column="0" Grid.Row="5" Margin="10,0,10,5" Height="50" Background="#FF2F495A" >
                 <Button.Template>
                     <ControlTemplate>
                         <Border CornerRadius="13" Background="#FF2F495A">
@@ -313,7 +336,7 @@
                 *
             </Button>
 
-            <Button  Grid.Column="1" Grid.Row="4" Margin="10,0,10,5" Height="50" Background="#FF2F495A" >
+            <Button  Grid.Column="1" Grid.Row="5" Margin="10,0,10,5" Height="50" Background="#FF2F495A" >
                 <Button.Template>
                     <ControlTemplate>
                         <Border CornerRadius="13" Background="#FF2F495A">
@@ -331,7 +354,7 @@
                 /
             </Button>
 
-            <Button  Grid.Column="2" Grid.Row="4" Margin="10,5,10,0" Background="#FF2F495A" Grid.RowSpan="2" >
+            <Button  Grid.Column="2" Grid.Row="5" Margin="10,5,10,0" Background="#FF2F495A" Grid.RowSpan="2" >
                 <Button.Template>
                     <ControlTemplate>
                         <Border CornerRadius="13" Background="#FF2F495A">
@@ -348,7 +371,7 @@
                 </Button.Template>
                 C
             </Button>
-            <Button  Grid.Column="3" Grid.Row="4" Margin="10,5,10,0" Background="#FF2F495A" Grid.RowSpan="2" >
+            <Button  Grid.Column="3" Grid.Row="5" Margin="10,5,10,0" Background="#FF2F495A" Grid.RowSpan="2" >
                 <Button.Template>
                     <ControlTemplate>
                         <Border CornerRadius="13" Background="#FF2F495A">
@@ -366,7 +389,7 @@
                 =
             </Button>
 
-            <Button  Grid.Column="0" Grid.Row="5" Margin="10,5,10,0" Background="#FF2F495A" Grid.ColumnSpan="2" >
+            <Button  Grid.Column="0" Grid.Row="6" Margin="10,5,10,0" Background="#FF2F495A" Grid.ColumnSpan="2" >
                 <Button.Template>
                     <ControlTemplate>
                         <Border CornerRadius="13" Background="#FF2F495A">

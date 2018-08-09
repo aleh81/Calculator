@@ -54,8 +54,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Services\BackroundThread.cs" />
-    <Compile Include="Services\MyEventArgs.cs" />
+    <Compile Include="Calculator.cs" />
+    <Compile Include="Services\Parser.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

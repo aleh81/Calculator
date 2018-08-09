@@ -23,9 +23,11 @@ namespace Calculator.WPF
     /// </summary>
     public partial class MainWindow : Window
     {
-        string _leftop = ""; 
-        string _operation = ""; 
-        string _rightop = ""; 
+        string _leftop = "";
+        string _operation = "";
+        string _rightop = "";
+
+        Thread thread;
 
         private static Mutex _instance;
         private const string AppName = "Calculator";
@@ -33,6 +35,9 @@ namespace Calculator.WPF
         public MainWindow()
         {
             _instance = new Mutex(true, AppName, out var tryCreateNewApp);
+
+            //thread = new Thread(Count);
+            //thread.Start();
 
             if (tryCreateNewApp)
             {
@@ -85,8 +90,9 @@ namespace Calculator.WPF
                 {
                     case "=":
                         Update_RightOp();
-                        TextBlock.Text = "";
+                        //TextBlock.Text = "";
                         TextBlock.Text += _rightop;
+                        //ResultTextBlock.Text += _rightop;
                         _operation = "";
                         break;
                     case "C":
@@ -130,14 +136,34 @@ namespace Calculator.WPF
             }
         }
 
-        private void Clear()
-        {
-
-        }
-
         private void titleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             this.DragMove();
+        }
+
+        private void TextChangedEventHandler(object sender, TextChangedEventArgs arg)
+        {
+            ResultTextBlock.Text = "";
+            var text = TextBlock.Text;
+            ResultTextBlock.Text += TextBlock.Text;
+
+            var task = new Task<string>(() => Count(text));
+
+            task.Start();
+
+            task.Wait();
+
+            var value = Parser.Count(task.Result);
+
+            if (value != null)
+            {
+                ResultTextBlock.Text = value;
+            }
+        }
+
+        private string Count(string text)
+        {
+            return text;
         }
     }
 }
