@@ -7,10 +7,13 @@ using System.Text.RegularExpressions;
 
 namespace Calculator.WPF.Services
 {
-    public static class Parser
+    public  class Parser
     {
-        public static string Count(string expression)
+        public event EventHandler<CounterChangedEventArgs> CounterChanged;
+
+        public void Count(object x)
         {
+            string expression = (string)x;
             var pattern = @"[-+*/]";
             var signedPattern = @"\d+";
             double fnum;
@@ -28,7 +31,7 @@ namespace Calculator.WPF.Services
 
             if(arrNumbers.Length < 2)
             {
-                return null;
+                //return null;
             }
 
             var arrOperators = Regex.Split(expression, signedPattern);
@@ -37,7 +40,7 @@ namespace Calculator.WPF.Services
 
             if(operatorsStr.Count() < 1)
             {
-                return null;
+                //return null;
             }
 
             int b = 0;
@@ -68,7 +71,17 @@ namespace Calculator.WPF.Services
                 }
             }
 
-            return fnum.ToString();
+            OnCounterChanged(fnum.ToString());
+
+            //return fnum.ToString();
+        }
+
+        private void OnCounterChanged(string value)
+        {
+            if (CounterChanged != null)
+            {
+                CounterChanged.Invoke(this, new CounterChangedEventArgs(value));
+            }
         }
     }
 }

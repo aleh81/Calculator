@@ -28,6 +28,7 @@ namespace Calculator.WPF
         string _rightop = "";
 
         Thread thread;
+        Parser parser;
 
         private static Mutex _instance;
         private const string AppName = "Calculator";
@@ -36,8 +37,11 @@ namespace Calculator.WPF
         {
             _instance = new Mutex(true, AppName, out var tryCreateNewApp);
 
-            //thread = new Thread(Count);
-            //thread.Start();
+            parser = new Parser();
+            parser.CounterChanged += CounterEventHandler;
+
+            thread = new Thread(new ParameterizedThreadStart(parser.Count));
+            thread.Start("1+2");
 
             if (tryCreateNewApp)
             {
@@ -88,53 +92,27 @@ namespace Calculator.WPF
             {
                 switch (s)
                 {
-                    case "=":
-                        Update_RightOp();
-                        //TextBlock.Text = "";
-                        TextBlock.Text += _rightop;
-                        //ResultTextBlock.Text += _rightop;
-                        _operation = "";
-                        break;
                     case "C":
                         _leftop = "";
                         _rightop = "";
                         _operation = "";
                         TextBlock.Text = "";
+                        ResultTextBlock.Text = "";
                         break;
-                    default:
-                        if (_rightop != "")
-                        {
-                            Update_RightOp();
-                            _leftop = _rightop;
-                            _rightop = "";
-                        }
-                        _operation = s;
+                    case "Off":
+                       // MessageBox.Show("Close");
+                        var targetProcess = Process.GetCurrentProcess();
+
+                        targetProcess.CloseMainWindow();
+                        targetProcess.Close();
+
+                        Environment.Exit(0);
                         break;
                 }
             }
         }
 
-        private void Update_RightOp()
-        {
-            double.TryParse(_leftop, out var num1);
-            double.TryParse(_rightop, out var num2);
 
-            switch (_operation)
-            {
-                case "+":
-                    _rightop = (num1 + num2).ToString();
-                    break;
-                case "-":
-                    _rightop = (num1 - num2).ToString();
-                    break;
-                case "*":
-                    _rightop = (num1 * num2).ToString();
-                    break;
-                case "/":
-                    _rightop = (num1 / num2).ToString();
-                    break;
-            }
-        }
 
         private void titleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -143,27 +121,29 @@ namespace Calculator.WPF
 
         private void TextChangedEventHandler(object sender, TextChangedEventArgs arg)
         {
-            ResultTextBlock.Text = "";
-            var text = TextBlock.Text;
-            ResultTextBlock.Text += TextBlock.Text;
+            //ResultTextBlock.Text = "";
+            //var text = TextBlock.Text;
+            //var parser = new Parser();
 
-            var task = new Task<string>(() => Count(text));
+            //var task = new Task<string>(() => parser.Count(text));
 
-            task.Start();
+            //task.Start();
 
-            task.Wait();
+            //task.Wait();
 
-            var value = Parser.Count(task.Result);
+            //var value = task.Result;
 
-            if (value != null)
-            {
-                ResultTextBlock.Text = value;
-            }
+            //if (value != null)
+            //{
+            //    ResultTextBlock.Text = value;
+            //}
         }
 
-        private string Count(string text)
+        
+
+        private void CounterEventHandler(object sender, CounterChangedEventArgs e)
         {
-            return text;
+            ResultTextBlock.Text = e.Value;
         }
     }
 }
