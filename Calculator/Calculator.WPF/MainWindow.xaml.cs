@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace Calculator.WPF
 {
@@ -23,7 +24,10 @@ namespace Calculator.WPF
     /// </summary>
     public partial class MainWindow : Window
     {
-        public event EventHandler<DataChangedEventArgs> DataChanged;
+        public event EventHandler<CounterChangedEventArgs> CounterChanged;
+
+        bool eventOccured = false;
+        public string mainValue;
 
         string _leftop = "";
         string _operation = "";
@@ -40,6 +44,8 @@ namespace Calculator.WPF
             {
                 InitializeComponent();
 
+                Thread.CurrentThread.Name = "MainThread";
+
                 DoAsyncWork();
 
                 foreach (UIElement el in Root.Children)
@@ -52,14 +58,9 @@ namespace Calculator.WPF
             }
             else
             {
-                MessageBox.Show($"Приложение {AppName} уже запущено");
+                MessageBox.Show($"Application {AppName} is already running");
 
-                var targetProcess = Process.GetCurrentProcess();
-
-                targetProcess.CloseMainWindow();
-                targetProcess.Close();
-
-                Environment.Exit(0);
+                CloseApp();
             }
         }
 
@@ -83,28 +84,6 @@ namespace Calculator.WPF
                     _rightop += s;
                 }
             }
-            //else
-            //{
-            //    switch (s)
-            //    {
-            //        case "C":
-            //            _leftop = "";
-            //            _rightop = "";
-            //            _operation = "";
-            //            TextBlock.Text = "";
-            //            ResultTextBlock.Text = "";
-            //            break;
-            //        case "Off":
-            //            // MessageBox.Show("Close");
-            //            var targetProcess = Process.GetCurrentProcess();
-
-            //            targetProcess.CloseMainWindow();
-            //            targetProcess.Close();
-
-            //            Environment.Exit(0);
-            //            break;
-            //    }
-            //}
         }
 
         private void titleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -115,14 +94,14 @@ namespace Calculator.WPF
         private void TextChangedEventHandler(object sender, TextChangedEventArgs arg)
         {
             var value = TextBlock.Text;
+            //var lastSign = value[value.Length];
 
+            //if (!(lastSign == '+' || lastSign == '-' || lastSign == '*' || lastSign == '/'))
+            //{
+            //}
             if (value.Contains("Off"))
             {
-                var targetProcess = Process.GetCurrentProcess();
-                targetProcess.CloseMainWindow();
-                targetProcess.Close();
-
-                Environment.Exit(0);
+                CloseApp();
             }
             else if (value.Contains("C"))
             {
@@ -131,31 +110,106 @@ namespace Calculator.WPF
             }
             else
             {
-                OnDataChanged(value);
+                mainValue = TextBlock.Text;
+
+                eventOccured = true;
             }
-        }
-
-        private void CounterEventHandler(object sender, CounterChangedEventArgs e)
-        {
-            ResultTextBlock.Text += e.Value;
-        }
-
-        private void OnDataChanged(string value)
-        {
-            DataChanged?.Invoke(this, new DataChangedEventArgs(value));
         }
 
         public void DoAsyncWork()
         {
+            bool state = true;
+
             new Thread(new ThreadStart(() =>
             {
-                var parser = new Parser();
+                CounterChanged += CounterEventHandler;
 
-                parser.CounterChanged += CounterEventHandler;
+                while (state)
+                {
+                    Thread.Sleep(100);
 
-                DataChanged += parser.DataEventHandler;
+                    if (eventOccured)
+                    {
+                        ToCount(mainValue);
+                    }
+
+                    eventOccured = false;
+                }
 
             })).Start();
+        }
+
+        private void OnCounterChanged(string value)
+        {
+            CounterChanged?.Invoke(this, new CounterChangedEventArgs(value));
+        }
+
+        private void CounterEventHandler(object sender, CounterChangedEventArgs e)
+        {
+            var val = e.Value;
+
+            this.Dispatcher.Invoke((ThreadStart)delegate { ResultTextBlock.Text = val; });
+        }
+
+        private void CloseApp()
+        {
+            var targetProcess = Process.GetCurrentProcess();
+            targetProcess.CloseMainWindow();
+            targetProcess.Close();
+
+            Environment.Exit(0);
+        }
+
+        private void ToCount(string expression)
+        {
+            var pattern = @"[-+*/]";
+            var signedPattern = @"\d+";
+            double fnum;
+
+            List<string> strList = new List<string>();
+
+            string[] elements = Regex.Split(expression, pattern);
+
+            var arrNumbers = new double[elements.Length];
+
+            for (var i = 0; i < elements.Length; i++)
+            {
+                double.TryParse(elements[i], out arrNumbers[i]);
+            }
+
+            var arrOperators = Regex.Split(expression, signedPattern);
+
+            var operatorsStr = arrOperators.Where(s => s != "").ToList();
+
+            int b = 0;
+
+            fnum = arrNumbers[0];
+
+            while (b < operatorsStr.Count)
+            {
+                if (operatorsStr[b] == "+")
+                {
+                    fnum = fnum + arrNumbers[b + 1];
+                    b++;
+                }
+                else if (operatorsStr[b] == "-")
+                {
+                    fnum = fnum - arrNumbers[b + 1];
+                    b++;
+                }
+                else if (operatorsStr[b] == "*")
+                {
+                    fnum = fnum * arrNumbers[b + 1];
+                    b++;
+                }
+                else if (operatorsStr[b] == "/")
+                {
+                    fnum = fnum / arrNumbers[b + 1];
+                    b++;
+                }
+            }
+
+            OnCounterChanged(fnum.ToString());
         }
     }
 }

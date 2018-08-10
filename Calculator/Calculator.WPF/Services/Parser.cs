@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using System.Windows;
+using System.Windows.Controls;
 using System.Text.RegularExpressions;
 using System.Threading;
 
@@ -10,8 +13,6 @@ namespace Calculator.WPF.Services
 {
     public  class Parser
     {
-        public event EventHandler<CounterChangedEventArgs> CounterChanged;
-
         public void Count(object x)
         {
             string expression = (string)x;
@@ -71,20 +72,6 @@ namespace Calculator.WPF.Services
                     b++;
                 }
             }
-
-            OnCounterChanged(fnum.ToString());
-
-            //return fnum.ToString();
-        }
-
-        private void OnCounterChanged(string value)
-        {
-            CounterChanged?.Invoke(this, new CounterChangedEventArgs(value));
-        }
-
-        public void DataEventHandler(object sender, DataChangedEventArgs e)
-        {
-            Count(e.Value);
         }
     }
 }

@@ -7,9 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Calculator.UI", "Calculator
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calculator.WPF", "Calculator.WPF\Calculator.WPF.csproj", "{44F09081-4C10-4601-A4E2-816990CBB0E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsyncAwaitTraining", "AsyncAwaitTraining\AsyncAwaitTraining.csproj", "{CDF5F3C7-9E24-414A-9FBA-B11F29FFF8A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AsyncAwaitTraining", "AsyncAwaitTraining\AsyncAwaitTraining.csproj", "{CDF5F3C7-9E24-414A-9FBA-B11F29FFF8A1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyCalculator", "MyCalculator\MyCalculator.csproj", "{935DD568-0142-4750-8850-E1ED299CF45A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{7D789119-43A0-4599-AB50-02E12FB934F0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{935DD568-0142-4750-8850-E1ED299CF45A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{935DD568-0142-4750-8850-E1ED299CF45A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{935DD568-0142-4750-8850-E1ED299CF45A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D789119-43A0-4599-AB50-02E12FB934F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D789119-43A0-4599-AB50-02E12FB934F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D789119-43A0-4599-AB50-02E12FB934F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D789119-43A0-4599-AB50-02E12FB934F0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
