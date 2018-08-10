@@ -190,6 +190,7 @@ namespace Calculator.WPF
                 }
             }
 
+            //Event
             OnCounterChanged(fnum.ToString());
         }
     }
