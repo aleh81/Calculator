@@ -75,25 +75,25 @@ namespace Calculator.WPF
         private void TextChangedEventHandler(object sender, TextChangedEventArgs arg)
         {
             var value = TextBlock.Text;
-            //var lastSign = value[value.Length];
+            if (value != "")
+            {
+                var lastSign = value[value.Length - 1];
 
-            //if (!(lastSign == '+' || lastSign == '-' || lastSign == '*' || lastSign == '/'))
-            //{
-            //}
-            if (value.Contains("Off"))
-            {
-                CloseApp();
-            }
-            else if (value.Contains("C"))
-            {
-                TextBlock.Text = "";
-                ResultTextBlock.Text = "";
-            }
-            else
-            {
-                mainValue = TextBlock.Text;
+                if (value.Contains("Off"))
+                {
+                    CloseApp();
+                }
+                else if (value.Contains("C"))
+                {
+                    TextBlock.Text = "";
+                    ResultTextBlock.Text = "";
+                }
+                if (!(lastSign == '+' || lastSign == '-' || lastSign == '*' || lastSign == '/'))
+                {
+                    mainValue = TextBlock.Text;
 
-                eventOccured = true;
+                    eventOccured = true;
+                }
             }
         }
 
