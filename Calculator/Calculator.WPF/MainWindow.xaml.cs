@@ -29,10 +29,6 @@ namespace Calculator.WPF
         bool eventOccured = false;
         public string mainValue;
 
-        string _leftop = "";
-        string _operation = "";
-        string _rightop = "";
-
         private static Mutex _instance;
         private const string AppName = "Calculator";
 
@@ -66,24 +62,9 @@ namespace Calculator.WPF
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-
             string s = (string)((Button)e.OriginalSource).Content;
 
             TextBlock.Text += s;
-
-            var result = double.TryParse(s, out var num);
-
-            if (result)
-            {
-                if (_operation == "")
-                {
-                    _leftop += s;
-                }
-                else
-                {
-                    _rightop += s;
-                }
-            }
         }
 
         private void titleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
