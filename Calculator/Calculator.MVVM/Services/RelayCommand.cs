@@ -9,8 +9,8 @@ namespace Calculator.MVVM.Services
 {
     public class RelayCommand : ICommand
     {
-        Action<object> _execute;
-        Func<object, bool> _canexecute;
+        readonly Action<object> _execute;
+        readonly Func<object, bool> _canexecute;
 
         public RelayCommand(Action<object> execute, Func<object, bool> canexecute)
         {
@@ -32,8 +32,8 @@ namespace Calculator.MVVM.Services
 
         public event EventHandler CanExecuteChanged
         {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
+            add => CommandManager.RequerySuggested += value;
+            remove => CommandManager.RequerySuggested -= value;
         }
 
         public void Execute(object parameter)

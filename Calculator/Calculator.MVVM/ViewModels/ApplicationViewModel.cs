@@ -14,31 +14,29 @@ namespace Calculator.MVVM.ViewModels
     class ApplicationViewModel : INotifyPropertyChanged
     {
         public ICommand MyCommand { get; set; }
+        public ICommand ButtonPressCommand { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         private int _expression;
-        private string nubersum;
+        private string _nubersum;
 
 
         private void OnPropertyChanged(string propertyname)
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyname));
-            }
-        }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
+        }      
 
         public int Expression
         {
-            get { return _expression; }
+            get => _expression;
             set { _expression = value; OnPropertyChanged("Expression"); }
         }
 
         public string NumberSum
         {
-            get { return nubersum; }
-            set { nubersum = value; OnPropertyChanged("NumberSum"); }
+            get => _nubersum;
+            set { _nubersum = value; OnPropertyChanged("NumberSum"); }
         }
 
 
@@ -46,7 +44,6 @@ namespace Calculator.MVVM.ViewModels
         {
             MyCommand = new RelayCommand(Execute, Canexecute);
         }
-
 
         private bool Canexecute(object parameter)
         {
@@ -57,9 +54,20 @@ namespace Calculator.MVVM.ViewModels
             else { return false; }
         }
 
+        private bool CanExecute2(object parametr)
+        {
+            return true;
+        }
+
         private void Execute(object parameter)
         {
             NumberSum = _expression.ToString();
+        }
+
+        private void Execute2(object parametr)
+        {
+            string expression = (string) parametr;
+            NumberSum = expression;
         }
     }
 }

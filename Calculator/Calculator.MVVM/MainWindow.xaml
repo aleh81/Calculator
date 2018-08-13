@@ -20,19 +20,18 @@
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
-
+            <ColumnDefinition/>
+            <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
-        <Label Grid.Row="0" Grid.Column="0" Content="Enter expression : " HorizontalContentAlignment="Right"></Label>
-        <TextBox Grid.Row="0" Grid.Column="1" Name="ExpressionFild" Margin="5" Text="{Binding Path=Expression}"></TextBox>
+        <TextBox Grid.Row="0" Grid.ColumnSpan="4" Name="ExpressionFild" Margin="5" Text="{Binding Path=Expression}"></TextBox>
+        <TextBox Grid.Row="1" Grid.ColumnSpan="4" Grid.Column="0" Margin="5" Text="{Binding Path=NumberSum, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
 
+        <Button Name="Button1"  Grid.Row="2" Grid.Column="0" Command="{Binding Path=ButtonPressCommand}" CommandParameter="1" />
 
-        <Button Grid.Row="2" Grid.Column="1" Margin="5" Content="SUM" Command="{Binding Path=MyCommand}">
+        <Button Grid.Row="3" Grid.Column="3" Margin="5" Content="SUM" Command="{Binding Path=MyCommand}">
         </Button>
-
-        <Label Grid.Row="3" Grid.Column="0" Content="Sum : " HorizontalContentAlignment="Right"></Label>
-        <TextBox Grid.Row="3" Grid.Column="1" Margin="5" Text="{Binding Path=NumberSum, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
     </Grid>
 </Window>
     
