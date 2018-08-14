@@ -57,6 +57,7 @@
     <Compile Include="Services\AppService.cs" />
     <Compile Include="Services\RelayCommand.cs" />
     <Compile Include="ViewModels\ApplicationViewModel.cs" />
+    <Compile Include="ViewModels\CalcButton.cs" />
     <Compile Include="Views\CalculatorView.xaml.cs">
       <DependentUpon>CalculatorView.xaml</DependentUpon>
     </Compile>

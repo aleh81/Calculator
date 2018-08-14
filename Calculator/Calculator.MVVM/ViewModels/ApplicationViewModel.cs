@@ -61,9 +61,9 @@ namespace Calculator.MVVM.ViewModels
                     {
                         eventOccured = true;
                     }
-                }
 
-                OnPropertyChanged("Expression");
+                    OnPropertyChanged("Expression");
+                }
             }
         }
 

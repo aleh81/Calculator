@@ -18,6 +18,12 @@ namespace Calculator.MVVM.Services
             _canexecute = canexecute;
         }
 
+        public event EventHandler CanExecuteChanged
+        {
+            add => CommandManager.RequerySuggested += value;
+            remove => CommandManager.RequerySuggested -= value;
+        }
+
         public bool CanExecute(object parameter)
         {
             if (_canexecute != null)
@@ -28,12 +34,6 @@ namespace Calculator.MVVM.Services
             {
                 return false;
             }
-        }
-
-        public event EventHandler CanExecuteChanged
-        {
-            add => CommandManager.RequerySuggested += value;
-            remove => CommandManager.RequerySuggested -= value;
         }
 
         public void Execute(object parameter)
