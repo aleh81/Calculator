@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Calculator.MVVM.Services;
+using System.Text.RegularExpressions;
 
 namespace Calculator.MVVM.ViewModels
 {
@@ -18,16 +19,21 @@ namespace Calculator.MVVM.ViewModels
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private int _expression;
+        private string _expression;
         private string _nubersum;
 
+        public ApplicationViewModel()
+        {
+            MyCommand = new RelayCommand(Execute, Canexecute);
+            ButtonPressCommand = new RelayCommand(Execute2, CanExecute2);
+        }
 
         private void OnPropertyChanged(string propertyname)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
         }      
 
-        public int Expression
+        public string Expression
         {
             get => _expression;
             set { _expression = value; OnPropertyChanged("Expression"); }
@@ -37,12 +43,6 @@ namespace Calculator.MVVM.ViewModels
         {
             get => _nubersum;
             set { _nubersum = value; OnPropertyChanged("NumberSum"); }
-        }
-
-
-        public ApplicationViewModel()
-        {
-            MyCommand = new RelayCommand(Execute, Canexecute);
         }
 
         private bool Canexecute(object parameter)
@@ -67,7 +67,60 @@ namespace Calculator.MVVM.ViewModels
         private void Execute2(object parametr)
         {
             string expression = (string) parametr;
-            NumberSum = expression;
+            Expression += expression;
+           // NumberSum = expression;
+        }
+
+        private string ToCount(string expression)
+        {
+            var pattern = @"[-+*/]";
+            var signedPattern = @"\d+";
+            double fnum;
+
+            List<string> strList = new List<string>();
+
+            string[] elements = Regex.Split(expression, pattern);
+
+            var arrNumbers = new double[elements.Length];
+
+            for (var i = 0; i < elements.Length; i++)
+            {
+                double.TryParse(elements[i], out arrNumbers[i]);
+            }
+
+            var arrOperators = Regex.Split(expression, signedPattern);
+
+            var operatorsStr = arrOperators.Where(s => s != "").ToList();
+
+            int b = 0;
+
+            fnum = arrNumbers[0];
+
+            while (b < operatorsStr.Count)
+            {
+                if (operatorsStr[b] == "+")
+                {
+                    fnum = fnum + arrNumbers[b + 1];
+                    b++;
+                }
+                else if (operatorsStr[b] == "-")
+                {
+                    fnum = fnum - arrNumbers[b + 1];
+                    b++;
+                }
+                else if (operatorsStr[b] == "*")
+                {
+                    fnum = fnum * arrNumbers[b + 1];
+                    b++;
+                }
+                else if (operatorsStr[b] == "/")
+                {
+                    fnum = fnum / arrNumbers[b + 1];
+                    b++;
+                }
+            }
+
+            return fnum.ToString();
         }
     }
 }

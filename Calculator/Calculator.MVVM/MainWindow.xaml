@@ -28,7 +28,8 @@
         <TextBox Grid.Row="0" Grid.ColumnSpan="4" Name="ExpressionFild" Margin="5" Text="{Binding Path=Expression}"></TextBox>
         <TextBox Grid.Row="1" Grid.ColumnSpan="4" Grid.Column="0" Margin="5" Text="{Binding Path=NumberSum, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
 
-        <Button Name="Button1"  Grid.Row="2" Grid.Column="0" Command="{Binding Path=ButtonPressCommand}" CommandParameter="1" />
+        <Button Name="Button1"  Grid.Row="2" Grid.Column="0" Command="{Binding Path=ButtonPressCommand}" CommandParameter="1" >1</Button>
+        <Button Name="ButtonPlus"  Grid.Row="2" Grid.Column="1" Command="{Binding Path=ButtonPressCommand}" CommandParameter="+" >+</Button>
 
         <Button Grid.Row="3" Grid.Column="3" Margin="5" Content="SUM" Command="{Binding Path=MyCommand}">
         </Button>
