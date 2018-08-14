@@ -26,7 +26,7 @@ namespace Calculator.MVVM.ViewModels
 
         public ApplicationViewModel()
         {
-            ButtonPressCommand = new RelayCommand(Execute, CanExecute);
+            ButtonPressCommand = new RelayCommand(ExpressionExecute, ExpressionCanExecute);
 
             DoAsyncWork();
         }
@@ -57,6 +57,12 @@ namespace Calculator.MVVM.ViewModels
                         OnPropertyChanged("NumberSum");
                         Expression = "";
                     }
+                    else if (value.Contains("->"))
+                    {
+                        var targetValue = Expression;
+                        targetValue.Remove(targetValue.Length - 1);
+                        Expression = targetValue;
+                    }
                     if (!(lastSign == '+' || lastSign == '-' || lastSign == '*' || lastSign == '/'))
                     {
                         eventOccured = true;
@@ -73,14 +79,14 @@ namespace Calculator.MVVM.ViewModels
             set { _nubersum = value; OnPropertyChanged("NumberSum"); }
         }
 
-        private bool CanExecute(object parametr)
+        private bool ExpressionCanExecute(object parametr)
         {
             var value = (string)parametr;
 
             return true;
         }
 
-        private void Execute(object parametr)
+        private void ExpressionExecute(object parametr)
         {
             string expression = (string)parametr;
             Expression += expression;

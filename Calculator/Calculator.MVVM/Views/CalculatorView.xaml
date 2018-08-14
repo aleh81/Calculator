@@ -95,6 +95,7 @@
             <Button Template="{StaticResource btnTemplate}" Content="*" Grid.Row="5" Grid.Column="0" Command="{Binding ButtonPressCommand}" CommandParameter="*" Height="50" Margin="10,0,10,5"/>
             <Button Template="{StaticResource btnTemplate}" Content="/" Grid.Row="5" Grid.Column="1" Command="{Binding ButtonPressCommand}" CommandParameter="/" Height="50" Margin="10,0,10,5"/>
             <Button Template="{StaticResource btnTemplate}" Content="C" Grid.Row="5" Grid.Column="2" Command="{Binding ButtonPressCommand}" CommandParameter="C" Margin="10,6,10,0" Grid.RowSpan="2"/>
+            <Button Template="{StaticResource btnTemplate}" Content="->" Grid.Row="5" Grid.Column="3" Command="{Binding ButtonPressCommand}" CommandParameter="->" Margin="10,6,10,0" Grid.RowSpan="2"/>
 
             <Button Template="{StaticResource btnTemplate}" Content="Off" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Command="{Binding ButtonPressCommand}" CommandParameter="Off" Margin="10,6,10,0"/>
 
