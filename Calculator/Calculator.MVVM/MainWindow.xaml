@@ -15,7 +15,7 @@
         <viewmodel:ApplicationViewModel x:Key="vm"></viewmodel:ApplicationViewModel>
 
         <ControlTemplate TargetType="Button" x:Key="btnTemplate" >
-            <Border CornerRadius="13" Background="#FF2F495A" >
+            <Border CornerRadius="13" Background="#FF2F495A">
                 <Border.Effect>
                     <DropShadowEffect  BlurRadius="3" Opacity="0.9" Direction="281" />
                 </Border.Effect>
