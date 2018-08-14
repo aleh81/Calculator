@@ -49,7 +49,7 @@ namespace Calculator.MVVM.ViewModels
 
                     if (value.Contains("Off"))
                     {
-                        CloseApp();
+                        AppService.CloseApp();
                     }
                     else if (value.Contains("C"))
                     {
@@ -155,15 +155,6 @@ namespace Calculator.MVVM.ViewModels
             }
 
             NumberSum = fnum.ToString();
-        }
-
-        private void CloseApp()
-        {
-            var targetProcess = Process.GetCurrentProcess();
-            targetProcess.CloseMainWindow();
-            targetProcess.Close();
-
-            Environment.Exit(0);
         }
     }
 
