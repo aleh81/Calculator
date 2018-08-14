@@ -9,34 +9,62 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Calculator.MVVM.Services;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Diagnostics;
 
 namespace Calculator.MVVM.ViewModels
 {
     class ApplicationViewModel : INotifyPropertyChanged
     {
-        public ICommand MyCommand { get; set; }
         public ICommand ButtonPressCommand { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        bool eventOccured = false;
         private string _expression;
         private string _nubersum;
 
         public ApplicationViewModel()
         {
-            MyCommand = new RelayCommand(Execute, Canexecute);
-            ButtonPressCommand = new RelayCommand(Execute2, CanExecute2);
+            ButtonPressCommand = new RelayCommand(Execute, CanExecute);
+
+            DoAsyncWork();
         }
 
         private void OnPropertyChanged(string propertyname)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
-        }      
+        }
 
         public string Expression
         {
             get => _expression;
-            set { _expression = value; OnPropertyChanged("Expression"); }
+            set
+            {
+                _expression = value;
+
+                if (value != "")
+                {
+                    var lastSign = value[value.Length - 1];
+
+                    if (value.Contains("Off"))
+                    {
+                        CloseApp();
+                    }
+                    else if (value.Contains("C"))
+                    {
+                        NumberSum = "";
+                        OnPropertyChanged("NumberSum");
+                        Expression = "";
+                    }
+                    if (!(lastSign == '+' || lastSign == '-' || lastSign == '*' || lastSign == '/'))
+                    {
+                        eventOccured = true;
+                    }
+                }
+
+                OnPropertyChanged("Expression");
+            }
         }
 
         public string NumberSum
@@ -45,33 +73,39 @@ namespace Calculator.MVVM.ViewModels
             set { _nubersum = value; OnPropertyChanged("NumberSum"); }
         }
 
-        private bool Canexecute(object parameter)
-        {
-            if (Expression != null)
-            {
-                return true;
-            }
-            else { return false; }
-        }
-
-        private bool CanExecute2(object parametr)
+        private bool CanExecute(object parametr)
         {
             return true;
         }
 
-        private void Execute(object parameter)
+        private void Execute(object parametr)
         {
-            NumberSum = _expression.ToString();
-        }
-
-        private void Execute2(object parametr)
-        {
-            string expression = (string) parametr;
+            string expression = (string)parametr;
             Expression += expression;
-           // NumberSum = expression;
         }
 
-        private string ToCount(string expression)
+        private void DoAsyncWork()
+        {
+            bool state = true;
+
+            new Thread(new ThreadStart(() =>
+            {
+                while (state)
+                {
+                    Thread.Sleep(50);
+
+                    if (eventOccured)
+                    {
+                        ToCount(Expression);
+                    }
+
+                    eventOccured = false;
+                }
+
+            })).Start();
+        }
+
+        private void ToCount(string expression)
         {
             var pattern = @"[-+*/]";
             var signedPattern = @"\d+";
@@ -120,9 +154,18 @@ namespace Calculator.MVVM.ViewModels
                 }
             }
 
-            return fnum.ToString();
+            NumberSum = fnum.ToString();
+        }
+
+        private void CloseApp()
+        {
+            var targetProcess = Process.GetCurrentProcess();
+            targetProcess.CloseMainWindow();
+            targetProcess.Close();
+
+            Environment.Exit(0);
         }
     }
+
 }
 
-//https://www.c-sharpcorner.com/article/overview-of-multi-binding-in-mvvm-wpf/

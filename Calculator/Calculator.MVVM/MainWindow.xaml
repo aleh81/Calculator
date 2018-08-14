@@ -5,34 +5,103 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewmodel="clr-namespace:Calculator.MVVM.ViewModels"  
         xmlns:local="clr-namespace:Calculator.MVVM"
+        WindowStyle="None "
+        Background="Transparent"
+        AllowsTransparency="True"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="500">
+        Title="MainWindow" Height="630" Width="400" >
+
     <Window.Resources>
         <viewmodel:ApplicationViewModel x:Key="vm"></viewmodel:ApplicationViewModel>
+
+        <ControlTemplate TargetType="Button" x:Key="btnTemplate">
+            <Border CornerRadius="13" Background="#FF2F495A">
+                <Border.Effect>
+                    <DropShadowEffect  BlurRadius="3" Opacity="0.9" Direction="281" />
+                </Border.Effect>
+                <ContentControl FontSize="30" HorizontalAlignment="Center" FontWeight="Bold" Foreground="White"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Content="{TemplateBinding Content}" />
+            </Border>
+        </ControlTemplate>
     </Window.Resources>
-    <Grid Width="400" Height="200" DataContext="{Binding Source={StaticResource vm}}">
-        <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
+    <Border  CornerRadius = "30" BorderBrush="#FFB93838" Background="#FFEC6262" Padding = "20" BorderThickness="0 0 0 10" Margin="10">
 
-        <TextBox Grid.Row="0" Grid.ColumnSpan="4" Name="ExpressionFild" Margin="5" Text="{Binding Path=Expression}"></TextBox>
-        <TextBox Grid.Row="1" Grid.ColumnSpan="4" Grid.Column="0" Margin="5" Text="{Binding Path=NumberSum, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+        <Grid x:Name="Root" Background="#FFEC6262" DataContext="{Binding Source={StaticResource vm}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="100"/>
+                <RowDefinition Height="100"/>
+                <RowDefinition Height="65"/>
+                <RowDefinition Height="65"/>
+                <RowDefinition Height="65"/>
+                <RowDefinition Height="65"/>
+                <RowDefinition Height="65"/>
+            </Grid.RowDefinitions>
 
-        <Button Name="Button1"  Grid.Row="2" Grid.Column="0" Command="{Binding Path=ButtonPressCommand}" CommandParameter="1" >1</Button>
-        <Button Name="ButtonPlus"  Grid.Row="2" Grid.Column="1" Command="{Binding Path=ButtonPressCommand}" CommandParameter="+" >+</Button>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition/>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
 
-        <Button Grid.Row="3" Grid.Column="3" Margin="5" Content="SUM" Command="{Binding Path=MyCommand}">
-        </Button>
-    </Grid>
+            <TextBlock  MouseLeftButtonDown="titleBar_MouseLeftButtonDown"  Margin="0,-20,5,81" Grid.ColumnSpan="4" ></TextBlock>
+
+            <Rectangle  Fill="White" Grid.ColumnSpan="4" Margin="5,20,5,10" Stroke="White" StrokeThickness="8" RadiusX="17" RadiusY="17"/>
+            <TextBlock  Grid.Column="0" Text="{Binding Path=Expression}"  Margin="25,30,30,19" FontSize="30" Grid.ColumnSpan="4" ></TextBlock>
+            <Rectangle  Fill="Transparent"  Grid.ColumnSpan="4" Margin="5,20,5,10" Stroke="White" StrokeThickness="8" RadiusX="17" RadiusY="17">
+                <Rectangle.Effect>
+                    <DropShadowEffect ShadowDepth="0" BlurRadius="9" Color="DarkGray"/>
+                </Rectangle.Effect>
+                <Rectangle.Clip>
+                    <RectangleGeometry Rect="0,0,400,100" RadiusX="8" RadiusY="8"/>
+                </Rectangle.Clip>
+            </Rectangle>
+
+            <Rectangle  Fill="White" Grid.ColumnSpan="4" Margin="5,13,5,24" Stroke="White" StrokeThickness="8" RadiusX="17" RadiusY="17" RenderTransformOrigin="0.5,0.5" Grid.Row="1"/>
+            <TextBlock  Grid.Column="0"   Margin="25,22,30,24" FontSize="30" Grid.ColumnSpan="4" Grid.Row="1" Text="{Binding Path=NumberSum, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <Rectangle  Fill="Transparent"  Grid.ColumnSpan="4" Margin="5,79,5,16" Stroke="White" StrokeThickness="8" RadiusX="17" RadiusY="17"  Grid.Row="1" Grid.RowSpan="2">
+                <Rectangle.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform ScaleY="-1"/>
+                        <SkewTransform/>
+                        <RotateTransform/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Rectangle.RenderTransform>
+                <Rectangle.Effect>
+                    <DropShadowEffect ShadowDepth="0" BlurRadius="9" Color="DarkGray"/>
+                </Rectangle.Effect>
+                <Rectangle.Clip>
+                    <RectangleGeometry Rect="0,0,400,100" RadiusX="8" RadiusY="8"/>
+                </Rectangle.Clip>
+            </Rectangle>
+
+            <Button Template="{StaticResource btnTemplate}" Content="1"  Grid.Row="2" Grid.Column="0" Command="{Binding ButtonPressCommand}" CommandParameter="1" Height="50" Margin="10,0,10,5"/>
+            <Button Template="{StaticResource btnTemplate}" Content="2" Grid.Row="2" Grid.Column="1" Command="{Binding ButtonPressCommand}" CommandParameter="2" Height="50" Margin="10,0,10,5"/>
+            <Button Template="{StaticResource btnTemplate}" Content="3" Grid.Row="2" Grid.Column="2" Command="{Binding ButtonPressCommand}" CommandParameter="3" Height="50" Margin="10,0,10,5"/>
+            <Button Template="{StaticResource btnTemplate}" Content="4" Grid.Row="2" Grid.Column="3" Command="{Binding ButtonPressCommand}" CommandParameter="4" Height="50" Margin="10,0,10,5"/>
+
+            <Button Template="{StaticResource btnTemplate}" Content="5" Grid.Row="3" Grid.Column="0" Command="{Binding ButtonPressCommand}" CommandParameter="5" Height="50" Margin="10,0,10,5"/>
+            <Button Template="{StaticResource btnTemplate}" Content="6" Grid.Row="3" Grid.Column="1" Command="{Binding ButtonPressCommand}" CommandParameter="6" Height="50" Margin="10,0,10,5"/>
+            <Button Template="{StaticResource btnTemplate}" Content="7" Grid.Row="3" Grid.Column="2" Command="{Binding ButtonPressCommand}" CommandParameter="7" Height="50" Margin="10,0,10,5"/>
+            <Button Template="{StaticResource btnTemplate}" Content="8" Grid.Row="3" Grid.Column="3" Command="{Binding ButtonPressCommand}" CommandParameter="8" Height="50" Margin="10,0,10,5"/>
+
+            <Button Template="{StaticResource btnTemplate}" Content="9" Grid.Row="4" Grid.Column="0" Command="{Binding ButtonPressCommand}" CommandParameter="9" Height="50" Margin="10,0,10,5"/>
+            <Button Template="{StaticResource btnTemplate}" Content="0" Grid.Row="4" Grid.Column="1" Command="{Binding ButtonPressCommand}" CommandParameter="0" Height="50" Margin="10,0,10,5"/>
+            <Button Template="{StaticResource btnTemplate}" Content="+" Grid.Row="4" Grid.Column="2" Command="{Binding ButtonPressCommand}" CommandParameter="+" Height="50" Margin="10,0,10,5"/>
+            <Button Template="{StaticResource btnTemplate}" Content="-" Grid.Row="4" Grid.Column="3" Command="{Binding ButtonPressCommand}" CommandParameter="-" Height="50" Margin="10,0,10,5"/>
+
+            <Button Template="{StaticResource btnTemplate}" Content="*" Grid.Row="5" Grid.Column="0" Command="{Binding ButtonPressCommand}" CommandParameter="*" Height="50" Margin="10,0,10,5"/>
+            <Button Template="{StaticResource btnTemplate}" Content="/" Grid.Row="5" Grid.Column="1" Command="{Binding ButtonPressCommand}" CommandParameter="/" Height="50" Margin="10,0,10,5"/>
+            <Button Template="{StaticResource btnTemplate}" Content="C" Grid.Row="5" Grid.Column="2" Command="{Binding ButtonPressCommand}" CommandParameter="C" Margin="10,6,10,0" Grid.RowSpan="2"/>
+
+            <Button Template="{StaticResource btnTemplate}" Content="Off" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Command="{Binding ButtonPressCommand}" CommandParameter="Off" Margin="10,6,10,0"/>
+
+        </Grid>
+        <Border.Effect>
+            <DropShadowEffect ShadowDepth="1" BlurRadius="8"/>
+        </Border.Effect>
+    </Border>
 </Window>
-    
+
