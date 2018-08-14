@@ -1,19 +1,16 @@
 ﻿using System.Windows;
+using System.Threading;
 using System.Windows.Input;
 using Calculator.MVVM.Services;
-using System.Threading;
 
-namespace Calculator.MVVM
+namespace Calculator.MVVM.Views
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
+    public partial class CalculatorView : Window
     {
         private static Mutex _instance;
         private const string AppName = "Calculator";
 
-        public MainWindow()
+        public CalculatorView()
         {
             _instance = new Mutex(true, AppName, out var tryCreateNewApp);
 
