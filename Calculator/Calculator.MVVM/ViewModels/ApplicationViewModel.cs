@@ -16,13 +16,13 @@ namespace Calculator.MVVM.ViewModels
 {
     class ApplicationViewModel : INotifyPropertyChanged
     {
-        public ICommand ButtonPressCommand { get; set; }
+        private bool eventOccured = false;
+        private string _expression;
+        private string _nubersum;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        bool eventOccured = false;
-        private string _expression;
-        private string _nubersum;
+        public ICommand ButtonPressCommand { get; set; }
 
         public ApplicationViewModel()
         {
@@ -75,6 +75,8 @@ namespace Calculator.MVVM.ViewModels
 
         private bool CanExecute(object parametr)
         {
+            var value = (string)parametr;
+
             return true;
         }
 
