@@ -11,6 +11,7 @@ using Calculator.MVVM.Services;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Diagnostics;
+using System.Windows;
 
 namespace Calculator.MVVM.ViewModels
 {
@@ -21,13 +22,35 @@ namespace Calculator.MVVM.ViewModels
         private string _nubersum;
 
         public event PropertyChangedEventHandler PropertyChanged;
-
+        
         public ICommand ButtonPressCommand { get; set; }
+
+        public ObservableCollection<ButtonViewModel> ButtonViews { get; set; }
 
         public ApplicationViewModel()
         {
             ButtonPressCommand = new RelayCommand(ExpressionExecute, ExpressionCanExecute);
 
+            ButtonViews = new ObservableCollection<ButtonViewModel>
+            {
+                new ButtonViewModel{Value  ="1"},
+                new ButtonViewModel{Value = "2"},
+                new ButtonViewModel{Value = "3"},
+                new ButtonViewModel{Value = "4"},
+                new ButtonViewModel{Value = "5"},
+                new ButtonViewModel{Value = "6"},
+                new ButtonViewModel{Value = "7"},
+                new ButtonViewModel{Value = "8"},
+                new ButtonViewModel{Value = "9"},
+                new ButtonViewModel{Value = "0"},
+                new ButtonViewModel{Value = "+"},
+                new ButtonViewModel{Value = "-"},
+                new ButtonViewModel{Value = "*"},
+                new ButtonViewModel{Value = "/"},
+                new ButtonViewModel{Value = "C"},
+                new ButtonViewModel{Value = "Off"}
+            };
+           
             DoAsyncWork();
         }
 
@@ -90,6 +113,7 @@ namespace Calculator.MVVM.ViewModels
         {
             string expression = (string)parametr;
             Expression += expression;
+            //MessageBox.Show(expression);
         }
 
         private void DoAsyncWork()
