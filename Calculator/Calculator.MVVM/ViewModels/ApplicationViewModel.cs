@@ -14,6 +14,7 @@ using System.Diagnostics;
 
 namespace Calculator.MVVM.ViewModels
 {
+    //hello world
     class ApplicationViewModel : INotifyPropertyChanged
     {
         private bool eventOccured = false;
